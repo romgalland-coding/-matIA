@@ -1,0 +1,17 @@
+<h1>My Wishlist</h1>
+
+<% if @games.any? %>
+  <ul>
+    <% @games.each do |game| %>
+      <li>
+        <strong><%= game.title %></strong>
+        - <%= game.studio%>
+        - <%= game.platform %>
+        - <%= game.genre %>
+        - <%= game.description%>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No games in your wishlist yet.</p>
+<% end %>
