@@ -10,5 +10,5 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
   end
 
-  resource :profile, only: %i(edit update)
+  resource :profile, only: %i(show edit update)
 end
