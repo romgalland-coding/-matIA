@@ -18,6 +18,11 @@
     <%= f.input :password_confirmation,
                 required: true,
                 input_html: { autocomplete: "new-password" } %>
+    <%= f.input :devices,
+                as: :check_boxes,
+                collection: User::PLATFORMS,
+                label: "My platforms",
+                required: true %>
   </div>
 
   <div class="form-actions">
