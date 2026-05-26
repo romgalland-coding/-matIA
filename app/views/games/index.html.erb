@@ -1,15 +1,31 @@
 <h1>My Wishlist</h1>
 
-<% if @games.any? %>
+<% wishlist = @games.select { |g| g.collection_status == "wishlist" } %>
+<% owned = @games.select { |g| g.collection_status == "owned" } %>
+
+<% if wishlist.any? %>
   <ul>
-    <% @games.each do |game| %>
+    <% wishlist.each do |game| %>
       <li>
         <strong><%= link_to game.title, game_path(game) %></strong>
         <%= game.platform %>
-        <%= button_to "Remove", game_path(game), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
       </li>
     <% end %>
   </ul>
 <% else %>
   <p>No games in your wishlist yet.</p>
+<% end %>
+
+<h2>My Games</h2>
+
+<% if owned.any? %>
+  <ul>
+    <% owned.each do |game| %>
+      <li>
+        <strong><%= link_to game.title, game_path(game) %></strong>
+        <%= game.platform %>
+      </li>
+    <% end %>
+<% else %>
+  <p>No owned games yet.</p>
 <% end %>
