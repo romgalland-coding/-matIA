@@ -1,0 +1,27 @@
+<div class="container py-4">
+  <h1 class="mb-4">Modifier mon profil</h1>
+
+  <%= simple_form_for @user, url: profile_path, method: :patch do |f| %>
+    <%= f.input :user_name, label: "Nom d'utilisateur" %>
+    <%= f.input :email %>
+
+    <%= f.input :password,
+                label: "Nouveau mot de passe",
+                hint: "Laisse vide si tu ne veux pas le changer",
+                required: false %>
+
+    <%= f.input :password_confirmation,
+                label: "Confirmer le nouveau mot de passe",
+                required: false %>
+
+    <%= f.input :devices,
+                as: :check_boxes,
+                collection: User: :PLATFORMS,
+                label: "Mes consoles" %>
+
+    <div class="mt-3">
+      <%= f.button :submit, "Enregistrer", class: "btn btn-primary" %>
+      <%= link_to "Annuler", profile_path, class: "btn btn-outline-secondary" %>
+    </div>
+  <% end %>
+</div>
