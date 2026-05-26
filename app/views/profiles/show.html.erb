@@ -1,5 +1,6 @@
 <div class="container py-4">
   <h1 class="mb-4">Mon profil</h1>
+  <%= link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "btn btn-outline-secondary" %>
 
   <div class="card mb-4">
     <div class="card-body">
