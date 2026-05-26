@@ -1,0 +1,15 @@
+<h1>My Wishlist</h1>
+
+<% if @games.any? %>
+  <ul>
+    <% @games.each do |game| %>
+      <li>
+        <strong><%= link_to game.title, game_path(game) %></strong>
+        <%= game.platform %>
+        <%= button_to "Remove", game_path(game), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No games in your wishlist yet.</p>
+<% end %>
