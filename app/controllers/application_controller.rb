@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, devices: []])
     devise_parameter_sanitizer.permit(:account_update, keys: [:user_name])
   end
 end

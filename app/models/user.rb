@@ -1,6 +1,20 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  PLATFORMS = [
+    "PC",
+    "PlayStation 5",
+    "PlayStation 4",
+    "PlayStation 3",
+    "Xbox Series S/X",
+    "Xbox One",
+    "Xbox 360",
+    "Nintendo Switch",
+    "Nintendo 3DS",
+    "iOS",
+    "Android",
+    "macOS",
+    "Linux"
+  ].freeze
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
