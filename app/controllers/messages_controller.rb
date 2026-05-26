@@ -34,11 +34,11 @@ class MessagesController < ApplicationController
     games = current_user.games
     wishlist = games.select { |g| g.collection_status == "wishlist" }.map(&:title).join(", ")
     owned = games.select { |g| g.collection_status == "owned" }.map(&:title).join(", ")
-    platforms = games.map(&:platform).uniq.join(", ")
+    devices = current_user.devices.join(", ")
     "Here is what you know about the user:
       - Games they already own: #{owned.presence || 'none'}
       - Games on their wishlist: #{wishlist.presence || 'none'}
-      - Devices they play on (inferred from their collection): #{platforms.presence || 'unknown'}"
+      - Devices they own: #{devices.presence || 'unknown'}"
   end
 
   def instructions
