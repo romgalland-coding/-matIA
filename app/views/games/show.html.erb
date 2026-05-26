@@ -1,0 +1,9 @@
+<h1><%= @game.title %></h1>
+
+<p><strong>Platform:</strong> <%= @game.platform %></p>
+<p><strong>Genre:</strong> <%= @game.genre %></p>
+<p><strong>Release date:</strong> <%= @game.release_date %></p>
+<p><strong>Description:</strong> <%= @game.description %></p>
+<p><strong>Status:</strong> <%= @game.collection_status %></p>
+
+<%= link_to "Back to wishlist", games_path %>
