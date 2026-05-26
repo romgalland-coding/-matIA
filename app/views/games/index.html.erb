@@ -5,6 +5,7 @@
     <% @games.each do |game| %>
       <li>
         <strong><%= game.title %></strong>
+        <%= game.platform %>
       </li>
     <% end %>
   </ul>
