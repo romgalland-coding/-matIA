@@ -6,6 +6,7 @@
       <li>
         <strong><%= link_to game.title, game_path(game) %></strong>
         <%= game.platform %>
+        <%= button_to "Remove", game_path(game), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
       </li>
     <% end %>
   </ul>
