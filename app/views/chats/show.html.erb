@@ -1,0 +1,15 @@
+<div class="container">
+  <h1>Chat</h1>
+
+  <% @messages.each do |message| %>
+    <p>
+      <strong><%= message.role %>:</strong>
+      <%= message.content %>
+    </p>
+  <% end %>
+
+  <%= form_with url: chat_messages_path(@chat) do |f| %>
+    <%= f.text_field :content, name: "message[content]", placeholder: "Type a message..." %>
+    <%= f.submit "Send" %>
+  <% end %>
+</div>
