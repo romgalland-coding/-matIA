@@ -1,7 +1,48 @@
-<div class="container">
-  <h1>What's matIA ? </h1>
-  <h2>Your gaming wishlist, built at the speed of a conversation.</h2>
-  <p>matIA transforms the way you discover and organize games — no more endless browsing, just an AI chatbot that understands what you want to play.</p>
-  <button class="btn btn-primary"> create an account to start chatting</button>
-  <%= button_to "Start chatting", chats_path, method: :post, class: "btn btn-primary" %>
+<div class="home-page px-4 pt-5">
+
+  <header class="mb-4">
+    <p class="home-eyebrow">MEET YOUR GAME GUIDE</p>
+    <h1 class="home-title">What's <em>matIA</em>?</h1>
+  </header>
+
+  <div class="card card-blue p-4 mb-4">
+    <div class="d-flex align-items-start gap-3">
+      <div class="home-icon-wrap flex-shrink-0">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </div>
+      <p class="mb-0 home-card-text">
+        matIA transforms how you discover and organize games — no endless browsing,
+        just an AI chatbot that understands exactly what you want to play.
+      </p>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6">
+      <div class="home-feature-card home-feature-card--yellow">
+        <i class="fa-solid fa-gamepad"></i>
+        <p>Personalized picks</p>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="home-feature-card home-feature-card--green">
+        <i class="fa-solid fa-heart"></i>
+        <p>Track your library</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column gap-3">
+    <% if user_signed_in? %>
+      <%= button_to chats_path, method: :post, class: "btn btn-primary w-100 py-3 home-cta" do %>
+        <i class="fa-solid fa-message me-2"></i>Start chatting
+      <% end %>
+    <% else %>
+      <%= link_to new_user_registration_path, class: "btn btn-primary w-100 py-3 home-cta" do %>
+        <i class="fa-solid fa-message me-2"></i>Create an account to start chatting
+      <% end %>
+      <%= link_to "I already have an account", new_user_session_path, class: "home-signin-link text-center" %>
+    <% end %>
+  </div>
+
 </div>
