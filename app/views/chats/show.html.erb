@@ -16,6 +16,9 @@
         <div class="chat-bubble chat-bubble--<%= message.role %>">
           <%= message.content %>
         </div>
+        <% if message.game.present? %>
+          <%= render "chats/recommendation_card", game: message.game, chat: @chat %>
+        <% end %>
       </div>
     <% end %>
   </div>

@@ -7,14 +7,13 @@ class RawgService
   end
 
   def search(query)
-  response = HTTParty.get("#{BASE_URL}/games", query: {
-    key: @api_key,
-    search: query,
-    search_precise: true,
-    ordering: "-rating",
-    page_size: 5
-  })
-  response["results"]
+    response = HTTParty.get("#{BASE_URL}/games", query: {
+      key: @api_key,
+      search: query,
+      search_precise: true,
+      page_size: 5
+    })
+    response["results"]
   end
 
   def find(id)
