@@ -1,1 +1,92 @@
-// Specific CSS for your home-page
+.home-page {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.home-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.4rem;
+}
+
+.home-title {
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #000;
+
+  em {
+    font-style: italic;
+  }
+}
+
+.home-icon-wrap {
+  padding: 0.5rem;
+  background-color: $mat-blue;
+  border-radius: 0.75rem;
+  border: 2px solid #000;
+
+  i { font-size: 1.1rem; }
+}
+
+.home-card-text {
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: #000;
+}
+
+.home-feature-card {
+  border-radius: 1rem;
+  padding: 1rem;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  i {
+    font-size: 1.5rem;
+    color: #000;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: #000;
+  }
+
+  &--yellow { background-color: $mat-yellow; }
+  &--green  { background-color: $mat-green; }
+}
+
+.home-cta-bar {
+  position: fixed;
+  bottom: 6rem;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+}
+
+.home-cta {
+  font-size: 1.125rem;
+}
+
+.home-signin-link {
+  display: block;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding: 0.5rem 0;
+
+  &:hover { color: #000; }
+}

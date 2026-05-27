@@ -1,34 +1,37 @@
-<nav class="navbar navbar-expand-sm navbar-light navbar-lewagon">
-  <div class="container-fluid mx-3">
-
-    <%= link_to root_path, class: "navbar-brand" do %>
-      <%= image_tag "home.png" %>
+<nav class="bottom-nav__bar">
+  <div class="bottom-nav__items">
+    <%= link_to root_path, class: "bottom-nav__item #{"bottom-nav__item--active" if current_page?(root_path)}" do %>
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
     <% end %>
 
-    <%= link_to chats_path, data: { turbo_method: :post }, class: "navbar-brand" do %>
-      <%= image_tag "logo_chatbot.png" %>
+    <% if user_signed_in? && (chat = current_user.chats.order(created_at: :desc).first) %>
+      <%= link_to chat_path(chat), class: "bottom-nav__item #{"bottom-nav__item--active" if request.path.start_with?("/chats")}" do %>
+        <i class="fa-solid fa-message"></i>
+        <span>Chat</span>
+      <% end %>
+    <% else %>
+      <%= button_to chats_path, method: :post, class: "bottom-nav__item #{"bottom-nav__item--active" if request.path.start_with?("/chats")}", form: { style: "display:contents" } do %>
+        <i class="fa-solid fa-message"></i>
+        <span>Chat</span>
+      <% end %>
     <% end %>
 
-    <%# #ajouter un if pour link vers le games path quand on est connecté et sinon rediriger vers la home %>
+    <%= link_to games_path, class: "bottom-nav__item #{"bottom-nav__item--active" if request.path.start_with?("/games")}" do %>
+      <i class="fa-solid fa-gamepad"></i>
+      <span>Games</span>
+    <% end %>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto">
-        <% if user_signed_in? %>
-          <li class="nav-item">
-            <%= link_to profile_path, class: "avatar" do %>
-              <%= image_tag "avatar.png" %>
-            <% end %>
-          </li>
-        <% else %>
-          <li class="nav-item">
-            <%= link_to "Login", new_user_session_path, class: "nav-link" %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
+    <% if user_signed_in? %>
+      <%= link_to profile_path, class: "bottom-nav__item #{"bottom-nav__item--active" if request.path.start_with?("/profile")}" do %>
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      <% end %>
+    <% else %>
+      <%= link_to new_user_session_path, class: "bottom-nav__item #{"bottom-nav__item--active" if request.path.start_with?("/users")}" do %>
+        <i class="fa-solid fa-user"></i>
+        <span>Login</span>
+      <% end %>
+    <% end %>
   </div>
 </nav>
