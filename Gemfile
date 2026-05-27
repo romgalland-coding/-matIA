@@ -23,6 +23,7 @@ gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 # Own GEMS
 gem "devise"
+gem "redcarpet"
 gem 'httparty'
 gem "ruby_llm", "~> 1.15"
 
