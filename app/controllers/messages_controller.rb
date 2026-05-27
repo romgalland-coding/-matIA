@@ -5,20 +5,20 @@ class MessagesController < ApplicationController
     Follow these steps in order, asking one question at a time:
     1. Ask if they want to play solo, against friends, or team up with friends online.
     2. Ask which device they want to play on (only ask this if they mention or imply they have multiple devices).
-    3. Ask what they're in the mood for: action, story, open world, horror, or RPG.
+    3. Ask what genre of game they're in the mood for and give some examples like RPG, FPS, open world, action, etc.
 
-    Once you have all the answers, recommend exactly ONE game that best matches their preferences.
-    If the user skips a recommendation, suggest a different game — never repeat one already mentioned in the conversation.
+    Once you have all the answers, recommend exactly ONE game that best matches their preferences. The game recommended cannot already be in the user's wishlist or in their played games.
+    If the user skips a recommendation, suggest a different game — never repeat one already mentioned in the conversation, and never recommend a game already in the user's wishlist or in their played games.
     Keep your responses short and conversational.
   PROMPT
 
   EXTRACT_TITLE_PROMPT = <<~PROMPT
-  You are a strict parser. You will receive a message from a video game assistant.
-  Your ONLY job: detect if the message contains an EXPLICIT, FINAL game recommendation.
-  A valid recommendation contains phrases like:
-  "I recommend", "you should play", "my pick is", "I suggest", "check out", "go with".
-  If and ONLY IF the message explicitly recommends a specific game title, reply with ONLY that exact title.
-  In ALL other cases (questions, follow-ups, clarifications, greetings), reply with exactly: NONE
+    You are a strict parser. You will receive a message from a video game assistant.
+    Your ONLY job: detect if the message contains an EXPLICIT, FINAL game recommendation.
+    A valid recommendation contains phrases like:
+    "I recommend", "you should play", "my pick is", "I suggest", "check out", "go with".
+    If and ONLY IF the message explicitly recommends a specific game title, reply with ONLY that exact title.
+    In ALL other cases (questions, follow-ups, clarifications, greetings), reply with exactly: NONE
   PROMPT
 
   def create
