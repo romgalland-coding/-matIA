@@ -12,23 +12,42 @@ class MessagesController < ApplicationController
   PROMPT
 
   def create
-    @chat = Chat.find(params[:chat_id])
+    @chat = current_user.chats.find(params[:chat_id])
+    @message = Message.new(message_params)
+    @message.chat = @chat
+    @message.role = "user"
+    # @chat.messages.create!(role: "user", content: params[:message][:content])
+    @ruby_llm_chat = RubyLLM.chat
+    build_conversation_history
+    response = @ruby_llm_chat.with_instructions(instructions).ask(@message.content)
 
-    @chat.messages.create!(role: "user", content: params[:message][:content])
-    llm_chat = RubyLLM.chat
-    llm_chat.with_instructions(instructions)
+    @assistant_message = @chat.messages.create(role: "assistant", content: response.content)
+    @chat.generate_title_from_conversation
 
-    @chat.messages.each do |msg|
-      llm_chat.add_message(role: msg.role, content: msg.content)
-    end
-    response = llm_chat.complete
+    # @chat.messages.each do |msg|
+    #   llm_chat.add_message(role: msg.role, content: msg.content)
+    # end
+    # response = llm_chat.complete
 
-    @chat.messages.create!(role: "assistant", content: response.content)
+    # @chat.messages.create!(role: "assistant", content: response.content)
 
     redirect_to chat_path(@chat)
   end
 
   private
+
+  def message_params
+    params.require(:message).permit(:content)
+  end
+
+  def build_conversation_history
+    @chat.messages.each do |message|
+      @ruby_llm_chat.add_message(
+        role: message.role,
+        content: message.content
+      )
+    end
+  end
 
   def user_context
     games = current_user.games
