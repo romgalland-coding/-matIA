@@ -93,6 +93,8 @@
 .game-card__cover {
   aspect-ratio: 4 / 3;
   background-color: $mat-blue-light;
+  background-size: cover;
+  background-position: center;
   border-bottom: 2.5px solid #000;
   display: flex;
   align-items: center;
