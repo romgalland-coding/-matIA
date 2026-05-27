@@ -10,7 +10,7 @@
     </div>
   </header>
 
-  <div class="chat-messages" id="chat-messages">
+  <div class="chat-messages" id="chat-messages" data-controller="autoscroll">
     <% @messages.each do |message| %>
       <div class="chat-message chat-message--<%= message.role %>">
         <div class="chat-bubble chat-bubble--<%= message.role %>">
@@ -40,11 +40,6 @@
 </div>
 
 <script>
-  // Scroll to bottom on load
-  const el = document.getElementById('chat-messages');
-  if (el) el.scrollTop = el.scrollHeight;
-
-  // Clear input after submit
   document.querySelector('.chat-input-form')?.addEventListener('turbo:submit-end', () => {
     document.getElementById('message-input').value = '';
   });
