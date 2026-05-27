@@ -1,31 +1,87 @@
-<h1>My Wishlist</h1>
+<div class="games-page px-4 pt-5">
 
-<% wishlist = @games.select { |g| g.collection_status == "wishlist" } %>
-<% owned = @games.select { |g| g.collection_status == "owned" } %>
+  <h1 class="games-title">My library</h1>
+  <p class="games-subtitle">Keep track of what you love and want next.</p>
 
-<% if wishlist.any? %>
-  <ul>
-    <% wishlist.each do |game| %>
-      <li>
-        <strong><%= link_to game.title, game_path(game) %></strong>
-        <%= game.platform %>
-      </li>
+  <%# Tab switcher %>
+  <div class="games-tabs mb-4">
+    <button class="games-tab games-tab--active" data-tab="wishlist" onclick="switchTab('wishlist')">
+      <i class="fa-solid fa-heart"></i> Wishlist
+    </button>
+    <button class="games-tab" data-tab="owned" onclick="switchTab('owned')">
+      <i class="fa-solid fa-check"></i> My Games
+    </button>
+  </div>
+
+  <%# Wishlist tab %>
+  <div id="tab-wishlist" class="games-grid">
+    <% wishlist_games = @games.select { |g| g.collection_status == "wishlist" } %>
+    <% if wishlist_games.any? %>
+      <% wishlist_games.each do |game| %>
+        <div class="game-card">
+          <div class="game-card__cover">
+            <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+          </div>
+          <div class="game-card__body">
+            <p class="game-card__title"><%= game.title %></p>
+            <p class="game-card__genre"><%= game.genre %></p>
+            <% if game.platform.present? %>
+              <span class="game-card__platform"><%= Array(game.platform).first %></span>
+            <% end %>
+          </div>
+          <div class="game-card__footer">
+            <%= button_to game_path(game), method: :delete, class: "game-card__action game-card__action--green", data: { turbo_confirm: "Mark as owned?" } do %>
+              <i class="fa-solid fa-plus"></i> Mark owned
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="games-empty">No games in your wishlist yet. <br><%= link_to "Start a chat to add some →", chats_path %></p>
     <% end %>
-  </ul>
-<% else %>
-  <p>No games in your wishlist yet.</p>
-<% end %>
+  </div>
 
-<h2>My Games</h2>
-
-<% if owned.any? %>
-  <ul>
-    <% owned.each do |game| %>
-      <li>
-        <strong><%= link_to game.title, game_path(game) %></strong>
-        <%= game.platform %>
-      </li>
+  <%# Owned tab %>
+  <div id="tab-owned" class="games-grid d-none">
+    <% owned_games = @games.select { |g| g.collection_status == "owned" } %>
+    <% if owned_games.any? %>
+      <% owned_games.each do |game| %>
+        <div class="game-card">
+          <div class="game-card__cover">
+            <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+          </div>
+          <div class="game-card__body">
+            <p class="game-card__title"><%= game.title %></p>
+            <p class="game-card__genre"><%= game.genre %></p>
+            <% if game.platform.present? %>
+              <span class="game-card__platform"><%= Array(game.platform).first %></span>
+            <% end %>
+          </div>
+          <div class="game-card__footer">
+            <%= button_to game_path(game), method: :delete, class: "game-card__action game-card__action--white", data: { turbo_confirm: "Remove this game?" } do %>
+              <i class="fa-solid fa-trash"></i> Remove
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="games-empty">No owned games yet.</p>
     <% end %>
-<% else %>
-  <p>No owned games yet.</p>
-<% end %>
+  </div>
+
+  <div class="mt-4 mb-2">
+    <%= link_to chats_path, class: "btn btn-success w-100 py-3 games-discover" do %>
+      <i class="fa-solid fa-plus me-2"></i>Discover more with matIA
+    <% end %>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.games-tab').forEach(el => el.classList.remove('games-tab--active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('games-tab--active');
+    document.getElementById('tab-wishlist').classList.toggle('d-none', tab !== 'wishlist');
+    document.getElementById('tab-owned').classList.toggle('d-none', tab !== 'owned');
+  }
+</script>
