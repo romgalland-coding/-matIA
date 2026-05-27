@@ -44,6 +44,12 @@
     color: #000;
     margin: 0;
   }
+
+  &__chat-id {
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.5);
+  }
 }
 
 // Messages scroll area

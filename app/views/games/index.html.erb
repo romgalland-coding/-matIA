@@ -14,8 +14,8 @@
   </div>
 
   <%# Wishlist tab %>
+  <% wishlist_games = @games.select { |g| g.collection_status == "wishlist" } %>
   <div id="tab-wishlist" class="games-grid">
-    <% wishlist_games = @games.select { |g| g.collection_status == "wishlist" } %>
     <% if wishlist_games.any? %>
       <% wishlist_games.each do |game| %>
         <div class="game-card">
@@ -37,13 +37,13 @@
         </div>
       <% end %>
     <% else %>
-      <p class="games-empty">No games in your wishlist yet. <br><%= link_to "Start a chat to add some →", chats_path %></p>
+      <p class="games-empty">No games in your wishlist yet. <br><a href="#" onclick="createChat(event)">Start a chat to add some →</a></p>
     <% end %>
   </div>
 
   <%# Owned tab %>
+  <% owned_games = @games.select { |g| g.collection_status == "owned" } %>
   <div id="tab-owned" class="games-grid d-none">
-    <% owned_games = @games.select { |g| g.collection_status == "owned" } %>
     <% if owned_games.any? %>
       <% owned_games.each do |game| %>
         <div class="game-card">
@@ -69,19 +69,34 @@
     <% end %>
   </div>
 
-  <div class="mt-4 mb-2">
-    <%= link_to chats_path, class: "btn btn-success w-100 py-3 games-discover" do %>
+  <div id="discover-btn" class="mt-4 mb-2 <%= wishlist_games.any? ? '' : 'd-none' %>">
+    <%= button_to chats_path, method: :post, class: "btn btn-success w-100 py-3 games-discover" do %>
       <i class="fa-solid fa-plus me-2"></i>Discover more with matIA
     <% end %>
   </div>
 
+  <%# Hidden form for creating a new chat via link %>
+  <%= form_with url: chats_path, method: :post, id: "new-chat-form" do |f| %>
+  <% end %>
+
 </div>
 
 <script>
+  const wishlistHasGames = <%= wishlist_games.any?.to_json %>;
+  const ownedHasGames = <%= owned_games.any?.to_json %>;
+
   function switchTab(tab) {
     document.querySelectorAll('.games-tab').forEach(el => el.classList.remove('games-tab--active'));
     document.querySelector(`[data-tab="${tab}"]`).classList.add('games-tab--active');
     document.getElementById('tab-wishlist').classList.toggle('d-none', tab !== 'wishlist');
     document.getElementById('tab-owned').classList.toggle('d-none', tab !== 'owned');
+
+    const hasGames = tab === 'wishlist' ? wishlistHasGames : ownedHasGames;
+    document.getElementById('discover-btn').classList.toggle('d-none', !hasGames);
+  }
+
+  function createChat(event) {
+    event.preventDefault();
+    document.getElementById('new-chat-form').submit();
   }
 </script>
