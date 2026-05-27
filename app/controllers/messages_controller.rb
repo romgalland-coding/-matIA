@@ -13,12 +13,9 @@ class MessagesController < ApplicationController
 
   def create
     @chat = current_user.chats.find(params[:chat_id])
-    @message = Message.new(message_params)
-    @message.chat = @chat
-    @message.role = "user"
-    # @chat.messages.create!(role: "user", content: params[:message][:content])
     @ruby_llm_chat = RubyLLM.chat
     build_conversation_history
+    @message = @chat.messages.create!(message_params.merge(role: "user")) # Claude reco
     response = @ruby_llm_chat.with_instructions(instructions).ask(@message.content)
 
     @assistant_message = @chat.messages.create(role: "assistant", content: response.content)
