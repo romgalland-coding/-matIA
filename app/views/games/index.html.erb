@@ -20,8 +20,10 @@
       <% wishlist_games.each do |game| %>
         <div class="game-card">
           <%= link_to game_path(game), class: "game-card__link" do %>
-            <div class="game-card__cover">
-              <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+            <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
+              <% unless game.cover_image.present? %>
+                <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+              <% end %>
             </div>
             <div class="game-card__body">
               <p class="game-card__title"><%= game.title %></p>
@@ -49,8 +51,10 @@
     <% if owned_games.any? %>
       <% owned_games.each do |game| %>
         <div class="game-card">
-          <div class="game-card__cover">
-            <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+          <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
+            <% unless game.cover_image.present? %>
+              <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+            <% end %>
           </div>
           <div class="game-card__body">
             <p class="game-card__title"><%= game.title %></p>
