@@ -1,9 +1,51 @@
-<h1><%= @game.title %></h1>
+<div class="game-show">
 
-<p><strong>Platform:</strong> <%= @game.platform %></p>
-<p><strong>Genre:</strong> <%= @game.genre %></p>
-<p><strong>Release date:</strong> <%= @game.release_date %></p>
-<p><strong>Description:</strong> <%= @game.description %></p>
-<p><strong>Status:</strong> <%= @game.collection_status %></p>
+  <div class="game-show__header">
+    <%= link_to games_path, class: "game-show__back" do %>
+      <i class="fa fa-chevron-left"></i>
+    <% end %>
+    <h1 class="game-show__title"><%= @game.title %></h1>
+    <span class="game-show__status game-show__status--<%= @game.collection_status %>">
+      <%= @game.collection_status.capitalize %>
+    </span>
+  </div>
 
-<%= link_to "Back to wishlist", games_path %>
+  <div class="game-show__cover">
+    <i class="fa fa-image"></i>
+  </div>
+
+  <div class="game-show__thumbnails">
+    <div class="game-show__thumb"><i class="fa fa-image"></i></div>
+    <div class="game-show__thumb"><i class="fa fa-image"></i></div>
+    <div class="game-show__thumb"><i class="fa fa-image"></i></div>
+  </div>
+
+  <div class="game-show__tags">
+    <% Array(@game.platform).each do |p| %>
+      <span class="game-show__tag game-show__tag--platform"><%= p %></span>
+    <% end %>
+    <% if @game.genre.present? %>
+      <span class="game-show__tag game-show__tag--genre"><%= @game.genre %></span>
+    <% end %>
+  </div>
+
+  <h2 class="game-show__section-title">Description</h2>
+
+  <div class="game-show__bottom">
+    <div class="game-show__desc-box">
+      <%= @game.description %>
+    </div>
+    <div class="game-show__info">
+      <% if @game.studio.present? %>
+        <div class="game-show__info-badge"><%= @game.studio %></div>
+      <% end %>
+      <% if @game.sales.present? %>
+        <div class="game-show__info-badge"><%= number_with_delimiter(@game.sales) %> sales</div>
+      <% end %>
+      <% if @game.release_date.present? %>
+        <div class="game-show__info-badge"><%= @game.release_date.strftime("%Y") %></div>
+      <% end %>
+    </div>
+  </div>
+
+</div>
