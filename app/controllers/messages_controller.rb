@@ -13,9 +13,12 @@ class MessagesController < ApplicationController
   PROMPT
 
   EXTRACT_TITLE_PROMPT = <<~PROMPT
-    You are a parser. The user will give you a game recommendation message.
-    If the message recommends a specific game, reply with ONLY the exact game title — nothing else, no punctuation, no explanation.
-    If no specific game is recommended, reply with exactly: NONE
+  You are a strict parser. You will receive a message from a video game assistant.
+  Your ONLY job: detect if the message contains an EXPLICIT, FINAL game recommendation.
+  A valid recommendation contains phrases like:
+  "I recommend", "you should play", "my pick is", "I suggest", "check out", "go with".
+  If and ONLY IF the message explicitly recommends a specific game title, reply with ONLY that exact title.
+  In ALL other cases (questions, follow-ups, clarifications, greetings), reply with exactly: NONE
   PROMPT
 
   def create
