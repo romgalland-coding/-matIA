@@ -1,8 +1,10 @@
 class Chat < ApplicationRecord
-  DEFAULT_TITLE = "untitled"
+  DEFAULT_TITLE = "nouvelle conversation"
 
+  # Claude reco
   TITLE_PROMPT = <<~PROMPT
     Generate a short, descriptive, 3-to-6-word title that summarizes the user question for a chat conversation.
+    Return ONLY the title, no markdown, no punctuation, no explanation, nothing else.
   PROMPT
 
   belongs_to :user
@@ -12,6 +14,7 @@ class Chat < ApplicationRecord
 
   def generate_title_from_conversation
     return unless title == DEFAULT_TITLE
+
     first_user_message = messages.where(role: "user").order(:created_at).first
     return if first_user_message.nil?
 
