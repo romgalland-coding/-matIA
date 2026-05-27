@@ -32,8 +32,8 @@
             </div>
           <% end %>
           <div class="game-card__footer">
-            <%= button_to game_path(game), method: :delete, class: "game-card__action game-card__action--green", data: { turbo_confirm: "Mark as owned?" } do %>
-              <i class="fa-solid fa-plus"></i> Mark owned
+            <%= button_to game_path(game), method: :patch, params: { collection_status: "owned" }, class: "game-card__action game-card__action--green" do %>
+              <i class="fa-solid fa-gamepad"></i> Mark owned
             <% end %>
           </div>
         </div>
