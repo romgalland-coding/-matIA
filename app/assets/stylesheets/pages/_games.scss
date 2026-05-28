@@ -181,3 +181,13 @@
 .games-discover {
   font-size: 1rem;
 }
+
+.game-show__hero {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  border-radius: 1rem;
+  border: 2.5px solid #000;
+  box-shadow: 4px 4px 0 0 #000;
+}
