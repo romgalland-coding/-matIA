@@ -115,4 +115,16 @@
     event.preventDefault();
     document.getElementById('new-chat-form').submit();
   }
+
+  // Check URL parameter for initial tab
+  function initializeTab() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get('tab') || 'wishlist';
+    if (initialTab === 'owned') {
+      switchTab('owned');
+    }
+  }
+
+  document.addEventListener('turbo:load', initializeTab);
+  initializeTab();
 </script>
