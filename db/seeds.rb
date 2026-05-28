@@ -17,7 +17,7 @@ Game.create!(
   title: "Elden Ring", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "Action-RPG",
   description: "A challenging open-world action RPG set in a dark fantasy universe.",
   studio: "FromSoftware", sales: 25_000_000, release_date: Date.parse("2022-02-25"),
-  collection_status: "owned", user_id: pixel_knight.id
+  collection_status: "played", user_id: pixel_knight.id
 )
 
 Game.create!(
@@ -108,7 +108,7 @@ Game.create!(
   title: "Animal Crossing: New Horizons", platform: ["Nintendo Switch"], genre: "Simulation",
   description: "Escape to a deserted island and create your own paradise.",
   studio: "Nintendo", sales: 44_000_000, release_date: Date.parse("2020-03-20"),
-  collection_status: "owned", user_id: cozy_gamer.id
+  collection_status: "played", user_id: cozy_gamer.id
 )
 
 Game.create!(
@@ -136,7 +136,7 @@ Game.create!(
   title: "Baldur's Gate 3", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "RPG",
   description: "Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.",
   studio: "Larian Studios", sales: 15_000_000, release_date: Date.parse("2023-08-03"),
-  collection_status: "owned", user_id: cyber_pulse.id
+  collection_status: "played", user_id: cyber_pulse.id
 )
 
 Game.create!(

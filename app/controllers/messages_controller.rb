@@ -19,15 +19,12 @@ class MessagesController < ApplicationController
     build_conversation_history
     @message = @chat.messages.create!(message_params.merge(role: "user"))
 
-    # Message assistant vide → affiche "..." immédiatement
     @assistant_message = @chat.messages.create!(role: "assistant", content: "")
 
-    # Instancier le tool avec le user courant
     @search_game_tool = SearchGameTool.new(user: current_user)
 
     ask_llm
 
-    # Sauvegarder le contenu final + associer le jeu si le tool a été appelé
     @assistant_message.update(
       content: @assistant_message.content,
       game:    @search_game_tool.found_game
