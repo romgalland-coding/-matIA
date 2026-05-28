@@ -2,6 +2,7 @@ class ChatsController < ApplicationController
   def show
     @chat = Chat.find(params[:id])
     @messages = @chat.messages
+    @limit_reached = @messages.where(role: "user").count >= Message::MAX_USER_MESSAGES
   end
 
   def create
@@ -9,6 +10,10 @@ class ChatsController < ApplicationController
     @chat.user = current_user
 
     if @chat.save
+      @chat.messages.create!(
+        role: "assistant",
+        content: "Hey **#{current_user.user_name}**! 3 questions and I'll find your next game. Let's go? 🚀"
+      )
       redirect_to chat_path(@chat)
     else
       @chats = @game.chats.where(user: current_user)

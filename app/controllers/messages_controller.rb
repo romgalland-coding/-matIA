@@ -18,12 +18,10 @@ class MessagesController < ApplicationController
     @ruby_llm_chat = RubyLLM.chat
     build_conversation_history
     @message = @chat.messages.create!(message_params.merge(role: "user"))
-
     @assistant_message = @chat.messages.create!(role: "assistant", content: "")
-
     @search_game_tool = SearchGameTool.new(user: current_user)
-
     ask_llm
+    finalize_assistant_message
 
     @assistant_message.update(
       content: @assistant_message.content,
@@ -31,6 +29,7 @@ class MessagesController < ApplicationController
     )
     @assistant_message.reload
     @chat.generate_title_from_conversation
+    notify_limit_if_reached
   end
 
   private
@@ -58,22 +57,50 @@ class MessagesController < ApplicationController
     end
   end
 
+  def finalize_assistant_message
+    @assistant_message.update(
+      content: @assistant_message.content,
+      game: @search_game_tool.found_game
+    )
+    broadcast_full_replace(@assistant_message)
+  end
+
+  def notify_limit_if_reached
+    return unless @chat.messages.where(role: "user").count >= Message::MAX_USER_MESSAGES
+
+    @limit_reached = true
+    @chat.messages.create!(
+      role: "assistant",
+      content: "You've reached your #{Message::MAX_USER_MESSAGES} messages limit for this chat."
+    )
+  end
+
   # Pendant le streaming : met à jour uniquement le texte (cible _content)
   # → n'écrase jamais la game card
   def broadcast_content(message)
     Turbo::StreamsChannel.broadcast_update_to(
       @chat,
-      target:  helpers.dom_id(message, :content),
+      target: helpers.dom_id(message, :content),
       partial: "messages/message_content",
-      locals:  { message: message }
+      locals: { message: message }
+    )
+  end
+
+  # Après le stream : remplace le message complet (texte + game card)
+  def broadcast_full_replace(message)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @chat,
+      target: helpers.dom_id(message),
+      partial: "messages/message",
+      locals: { message: message }
     )
   end
 
   def user_context
     games    = current_user.games
     wishlist = games.select { |g| g.collection_status == "wishlist" }.map(&:title).join(", ")
-    owned = games.select { |g| g.collection_status == "played" }.map(&:title).join(", ")
-    devices = current_user.devices.join(", ")
+    owned    = games.select { |g| g.collection_status == "played" }.map(&:title).join(", ")
+    devices  = current_user.devices.join(", ")
     "Here is what you know about the user:
       - Games they already own: #{owned.presence || 'none'}
       - Games on their wishlist: #{wishlist.presence || 'none'}
