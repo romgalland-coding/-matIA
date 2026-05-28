@@ -1,3 +1,8 @@
+<%# Mise à jour finale du message assistant (game card incluse si un jeu a été trouvé) %>
+<%= turbo_stream.replace dom_id(@assistant_message) do %>
+  <%= render "messages/message", message: @assistant_message %>
+<% end %>
+
 <% if @chat.title_previously_changed? %>
   <%= turbo_stream.update "chat_title", @chat.title %>
 <% end %>
