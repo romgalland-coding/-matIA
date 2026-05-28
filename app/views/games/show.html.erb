@@ -1,51 +1,53 @@
-<div class="game-show">
+<div class="game-show px-4 pt-4">
 
-  <div class="game-show__header">
-    <%= link_to games_path, class: "game-show__back" do %>
-      <i class="fa fa-chevron-left"></i>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <%= link_to games_path, class: "btn btn-secondary btn-sm" do %>
+      <i class="fa-solid fa-chevron-left"></i> Back
     <% end %>
-    <h1 class="game-show__title"><%= @game.title %></h1>
-    <span class="game-show__status game-show__status--<%= @game.collection_status %>">
+    <span class="chip chip-yellow">
+      <i class="fa-solid <%= @game.collection_status == 'owned' ? 'fa-check' : 'fa-heart' %>"></i>
       <%= @game.collection_status.capitalize %>
     </span>
   </div>
 
-  <div class="game-show__cover">
-    <i class="fa fa-image"></i>
-  </div>
+  <% if @game.genre.present? %>
+    <p class="text-uppercase fw-semibold text-muted small mb-1"><%= @game.genre %></p>
+  <% end %>
+  <h1 class="fw-bold mb-3" style="font-size: 2rem; line-height: 1.1;"><%= @game.title %></h1>
 
-  <div class="game-show__thumbnails">
-    <div class="game-show__thumb"><i class="fa fa-image"></i></div>
-    <div class="game-show__thumb"><i class="fa fa-image"></i></div>
-    <div class="game-show__thumb"><i class="fa fa-image"></i></div>
-  </div>
+  <% if @game.cover_image.present? %>
+    <div class="game-show__hero mb-3" style="background-image: url('<%= @game.cover_image %>')"></div>
+  <% end %>
 
-  <div class="game-show__tags">
-    <% Array(@game.platform).each do |p| %>
-      <span class="game-show__tag game-show__tag--platform"><%= p %></span>
-    <% end %>
-    <% if @game.genre.present? %>
-      <span class="game-show__tag game-show__tag--genre"><%= @game.genre %></span>
-    <% end %>
-  </div>
-
-  <h2 class="game-show__section-title">Description</h2>
-
-  <div class="game-show__bottom">
-    <div class="game-show__desc-box">
-      <%= @game.description %>
-    </div>
-    <div class="game-show__info">
-      <% if @game.studio.present? %>
-        <div class="game-show__info-badge"><%= @game.studio %></div>
-      <% end %>
-      <% if @game.sales.present? %>
-        <div class="game-show__info-badge"><%= number_with_delimiter(@game.sales) %> sales</div>
-      <% end %>
-      <% if @game.release_date.present? %>
-        <div class="game-show__info-badge"><%= @game.release_date.strftime("%Y") %></div>
+  <% if @game.platform.present? %>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <% Array(@game.platform).each do |p| %>
+        <span class="chip chip-green"><%= p %></span>
       <% end %>
     </div>
-  </div>
+  <% end %>
+
+  <% if @game.description.present? %>
+    <h2 class="fw-bold mb-1" style="font-size: 1.25rem;">Description</h2>
+    <div class="card card-flat p-3 mb-2">
+      <p class="mb-0" style="font-size: 0.9375rem; line-height: 1.6;"><%= @game.description %></p>
+    </div>
+  <% end %>
+
+<div class="d-flex gap-2 mb-2 flex-wrap">
+  <% if @game.studio.present? %>
+    <span class="chip chip-green"><%= @game.studio %></span>
+  <% end %>
+  <% if @game.release_date.present? %>
+    <span class="chip chip-green"><%= @game.release_date.strftime("%b %-d, %Y") %></span>
+  <% end %>
+  <% if @game.sales.present? %>
+    <span class="chip chip-green"><%= "#{number_with_delimiter(@game.sales)} sales" %></span>
+  <% end %>
+</div>
+
+  <%= button_to game_path(@game), method: :patch, params: { collection_status: "owned" }, class: "btn btn-primary w-100 py-3" do %>
+    <i class="fa-solid fa-check"></i> Mark as owned
+  <% end %>
 
 </div>
