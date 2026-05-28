@@ -1,0 +1,8 @@
+<div id="<%= dom_id(message) %>" class="chat-message chat-message--<%= message.role %>">
+  <div class="chat-bubble chat-bubble--<%= message.role %>">
+    <%= message.content.present? ? markdown(message.content) : "..." %>
+  </div>
+  <% if message.game.present? %>
+    <%= render "chats/recommendation_card", game: message.game, chat: message.chat %>
+  <% end %>
+</div>

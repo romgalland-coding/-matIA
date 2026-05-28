@@ -26,13 +26,15 @@ class MessagesController < ApplicationController
     @ruby_llm_chat = RubyLLM.chat
     build_conversation_history
     @message = @chat.messages.create!(message_params.merge(role: "user"))
-    response = @ruby_llm_chat.with_instructions(instructions).ask(@message.content)
 
-    display_content, game = extract_recommendation(response.content)
-    @assistant_message = @chat.messages.create(role: "assistant", content: display_content, game: game)
+    @assistant_message = @chat.messages.create!(role: "assistant", content: "")
+
+    ask_llm
+
+    display_content, game = extract_recommendation(@assistant_message.content)
+    @assistant_message.update(content: display_content, game: game)
+    broadcast_replace(@assistant_message)
     @chat.generate_title_from_conversation
-
-    redirect_to chat_path(@chat)
   end
 
   private
@@ -43,11 +45,29 @@ class MessagesController < ApplicationController
 
   def build_conversation_history
     @chat.messages.each do |message|
-      @ruby_llm_chat.add_message(
-        role: message.role,
-        content: message.content
-      )
+      next if message.content.blank?
+
+      @ruby_llm_chat.add_message(role: message.role, content: message.content)
     end
+  end
+
+  def ask_llm
+    @ruby_llm_chat.with_instructions(instructions)
+    @ruby_llm_chat.ask(@message.content) do |chunk|
+      next if chunk.content.blank?
+
+      @assistant_message.content += chunk.content
+      broadcast_replace(@assistant_message)
+    end
+  end
+
+  def broadcast_replace(message)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @chat,
+      target: helpers.dom_id(message),
+      partial: "messages/message",
+      locals: { message: message }
+    )
   end
 
   def user_context
