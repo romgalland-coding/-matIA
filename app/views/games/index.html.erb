@@ -8,6 +8,32 @@
   </div>
   <p class="games-subtitle">Keep track of what you love and want next.</p>
 
+  <div class="games-sort-container mb-4">
+    <button id="games-sort-toggle" type="button" class="btn btn-secondary games-sort-toggle" aria-expanded="false" aria-controls="games-sort-panel" onclick="toggleSortPanel()">
+      <i class="fa-solid fa-filter me-2"></i> Sort by
+    </button>
+
+    <div id="games-sort-panel" class="games-sort-panel d-none">
+      <div class="games-sort-row">
+        <span class="games-sort-label">Sort by</span>
+        <div class="games-sort-group">
+          <%= link_to "Title", games_path(sort: "title", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'title'}" %>
+          <%= link_to "Platform", games_path(sort: "platform", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'platform'}" %>
+          <%= link_to "Genre", games_path(sort: "genre", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'genre'}" %>
+          <%= link_to "Release date", games_path(sort: "release_date", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'release_date'}" %>
+          <%= link_to "Sales", games_path(sort: "sales", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'sales'}" %>
+        </div>
+      </div>
+      <div class="games-sort-row">
+        <span class="games-sort-label">Order</span>
+        <div class="games-sort-group">
+          <%= link_to "Ascending", games_path(sort: @sort, direction: "asc", tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @direction == 'asc'}" %>
+          <%= link_to "Descending", games_path(sort: @sort, direction: "desc", tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @direction == 'desc'}" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <%# Tab switcher %>
   <div class="games-tabs mb-4">
     <button class="games-tab games-tab--active" data-tab="wishlist" onclick="switchTab('wishlist')">
@@ -109,11 +135,27 @@
 
     const hasGames = tab === 'wishlist' ? wishlistHasGames : ownedHasGames;
     document.getElementById('discover-btn').classList.toggle('d-none', !hasGames);
+    updateSortLinks(tab);
+  }
+
+  function updateSortLinks(tab) {
+    document.querySelectorAll('.js-sorting-link').forEach(link => {
+      const url = new URL(link.href, window.location.origin);
+      url.searchParams.set('tab', tab);
+      link.href = url.toString();
+    });
   }
 
   function createChat(event) {
     event.preventDefault();
     document.getElementById('new-chat-form').submit();
+  }
+
+  function toggleSortPanel() {
+    const panel = document.getElementById('games-sort-panel');
+    const button = document.getElementById('games-sort-toggle');
+    const isHidden = panel.classList.toggle('d-none');
+    button.setAttribute('aria-expanded', String(!isHidden));
   }
 
   // Check URL parameter for initial tab
@@ -123,6 +165,7 @@
     if (initialTab === 'owned') {
       switchTab('owned');
     }
+    updateSortLinks(initialTab);
   }
 
   document.addEventListener('turbo:load', initializeTab);

@@ -197,6 +197,83 @@
   margin-bottom: 0.25rem;
 }
 
+.games-sort-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.games-sort-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  width: auto;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: left;
+  min-width: 6rem;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  color: #000;
+}
+
+.games-sort-panel {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: white;
+  border: 2.5px solid #000;
+  border-radius: 1rem;
+  box-shadow: 1px 1px 0 0 #000;
+}
+
+.games-sort-row {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.games-sort-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.games-sort-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.games-sort-button {
+  display: inline-flex;
+  align-items: right;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 2.5px solid #000;
+  background-color: white;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 0 #000;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
+}
+
+.games-sort-button:hover,
+.games-sort-button:focus {
+  background-color: $mat-yellow;
+}
+
+.games-sort-button--active {
+  background-color: $mat-yellow;
+  color: #000;
+}
+
 // Owned edit mode
 .game-edit-btn {
   display: inline-flex;
