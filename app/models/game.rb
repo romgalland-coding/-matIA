@@ -2,7 +2,7 @@ class Game < ApplicationRecord
   belongs_to :user
   has_many :messages, dependent: :nullify
 
-  validates :collection_status, inclusion: { in: ["owned", "wishlist", "pending", "skipped"] }
+  validates :collection_status, inclusion: { in: ["played", "wishlist", "pending", "skipped"] }
   # validate :platforms_must_be_valid
 
   # private

@@ -1,6 +1,11 @@
-<div class="games-page px-4 pt-5">
+<div class="games-page px-4 pt-5" data-controller="edit-mode">
 
-  <h1 class="games-title">My library</h1>
+  <div class="games-title-row">
+    <h1 class="games-title">My library</h1>
+    <button id="edit-btn" class="game-edit-btn d-none" data-action="click->edit-mode#toggle">
+      <i class="fa-solid fa-pen-to-square"></i> Edit
+    </button>
+  </div>
   <p class="games-subtitle">Keep track of what you love and want next.</p>
 
   <%# Tab switcher %>
@@ -34,8 +39,8 @@
             </div>
           <% end %>
           <div class="game-card__footer">
-            <%= button_to game_path(game), method: :patch, params: { collection_status: "owned" }, class: "game-card__action game-card__action--green" do %>
-              <i class="fa-solid fa-gamepad"></i> Mark owned
+            <%= button_to game_path(game), method: :patch, params: { collection_status: "played" }, class: "game-card__action game-card__action--blue" do %>
+              <i class="fa-solid fa-gamepad"></i> Mark played
             <% end %>
           </div>
         </div>
@@ -46,35 +51,35 @@
   </div>
 
   <%# Owned tab %>
-  <% owned_games = @games.select { |g| g.collection_status == "owned" } %>
-  <div id="tab-owned" class="games-grid d-none">
-    <% if owned_games.any? %>
-      <% owned_games.each do |game| %>
-        <div class="game-card">
-          <%= link_to game_path(game), class: "game-card__link" do %>
-            <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
-              <% unless game.cover_image.present? %>
-                <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
-              <% end %>
-            </div>
-            <div class="game-card__body">
-              <p class="game-card__title"><%= game.title %></p>
-              <p class="game-card__genre"><%= game.genre %></p>
-              <% if game.platform.present? %>
-                <span class="game-card__platform"><%= Array(game.platform).first %></span>
-              <% end %>
+  <% owned_games = @games.select { |g| g.collection_status == "played" } %>
+  <div id="tab-owned" class="d-none">
+    <div class="owned-section" data-edit-mode-target="ownedSection">
+      <% if owned_games.any? %>
+        <div class="games-grid">
+          <% owned_games.each do |game| %>
+            <div class="game-card">
+              <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
+                <% unless game.cover_image.present? %>
+                  <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+                <% end %>
+                <%= button_to game_path(game), method: :delete, class: "game-card__delete-btn", form: { class: "game-card__delete-form" }, data: { action: "click->confirm#show", game_title: game.title, game_cover: game.cover_image } do %>
+                  <i class="fa-solid fa-xmark"></i>
+                <% end %>
+              </div>
+              <div class="game-card__body">
+                <p class="game-card__title"><%= game.title %></p>
+                <p class="game-card__genre"><%= game.genre %></p>
+                <% if game.platform.present? %>
+                  <span class="game-card__platform"><%= Array(game.platform).first %></span>
+                <% end %>
+              </div>
             </div>
           <% end %>
-          <div class="game-card__footer">
-            <%= button_to game_path(game), method: :delete, class: "game-card__action game-card__action--white", data: { turbo_confirm: "Remove this game?" } do %>
-              <i class="fa-solid fa-trash"></i> Remove
-            <% end %>
-          </div>
         </div>
+      <% else %>
+        <p class="games-empty">No played games yet.</p>
       <% end %>
-    <% else %>
-      <p class="games-empty">No owned games yet.</p>
-    <% end %>
+    </div>
   </div>
 
   <div id="discover-btn" class="mt-4 mb-2 <%= wishlist_games.any? ? '' : 'd-none' %>">
@@ -98,6 +103,7 @@
     document.querySelector(`[data-tab="${tab}"]`).classList.add('games-tab--active');
     document.getElementById('tab-wishlist').classList.toggle('d-none', tab !== 'wishlist');
     document.getElementById('tab-owned').classList.toggle('d-none', tab !== 'owned');
+    document.getElementById('edit-btn').classList.toggle('d-none', tab !== 'owned');
 
     const hasGames = tab === 'wishlist' ? wishlistHasGames : ownedHasGames;
     document.getElementById('discover-btn').classList.toggle('d-none', !hasGames);

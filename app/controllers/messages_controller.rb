@@ -73,8 +73,8 @@ class MessagesController < ApplicationController
   def user_context
     games    = current_user.games
     wishlist = games.select { |g| g.collection_status == "wishlist" }.map(&:title).join(", ")
-    owned    = games.select { |g| g.collection_status == "owned" }.map(&:title).join(", ")
-    devices  = current_user.devices.join(", ")
+    owned = games.select { |g| g.collection_status == "played" }.map(&:title).join(", ")
+    devices = current_user.devices.join(", ")
     "Here is what you know about the user:
       - Games they already own: #{owned.presence || 'none'}
       - Games on their wishlist: #{wishlist.presence || 'none'}

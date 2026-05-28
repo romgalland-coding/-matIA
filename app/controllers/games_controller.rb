@@ -12,7 +12,7 @@ class GamesController < ApplicationController
   def destroy
     @game = current_user.games.find(params[:id])
     @game.destroy
-    redirect_to games_path, notice: "#{@game.title} removed from wishlist."
+    redirect_to games_path, notice: "#{@game.title} removed."
   end
 
   def show
