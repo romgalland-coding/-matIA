@@ -22,9 +22,12 @@
   &__item {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 0.2rem;
-    padding: 0.4rem 1rem;
+    width: 5rem;
+    min-height: 3.6rem;
+    padding: 0.3rem 0.45rem;
     border-radius: 0.75rem;
     border: 2px solid #000;
     background-color: white;
@@ -34,6 +37,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    text-align: center;
 
     i {
       font-size: 1.1rem;
@@ -47,7 +51,8 @@
 
     &--active {
       background-color: $mat-blue;
-      box-shadow: 3px 3px 0 0 #000;
+      // box-shadow: 3px 3px 0 0 #000;  "former box shadow"
+      box-shadow: none;
       transform: translateY(-2px);
     }
   }

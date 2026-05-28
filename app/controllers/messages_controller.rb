@@ -7,18 +7,10 @@ class MessagesController < ApplicationController
     2. Ask which device they want to play on (only ask this if they mention or imply they have multiple devices).
     3. Ask what genre of game they're in the mood for and give some examples like RPG, FPS, open world, action, etc.
 
-    Once you have all the answers, recommend exactly ONE game that best matches their preferences. The game recommended cannot already be in the user's wishlist or in their played games.
-    If the user skips a recommendation, suggest a different game — never repeat one already mentioned in the conversation, and never recommend a game already in the user's wishlist or in their played games.
+    Once you have all the answers, use the search_game tool to find a real game that matches the user's preferences.
+    The game cannot already be in the user's wishlist or owned games.
+    If the user skips a recommendation, use the search_game tool to find a different game — never repeat a game already mentioned or already in the user's collection.
     Keep your responses short and conversational.
-  PROMPT
-
-  EXTRACT_TITLE_PROMPT = <<~PROMPT
-    You are a strict parser. You will receive a message from a video game assistant.
-    Your ONLY job: detect if the message contains an EXPLICIT, FINAL game recommendation.
-    A valid recommendation contains phrases like:
-    "I recommend", "you should play", "my pick is", "I suggest", "check out", "go with".
-    If and ONLY IF the message explicitly recommends a specific game title, reply with ONLY that exact title.
-    In ALL other cases (questions, follow-ups, clarifications, greetings), reply with exactly: NONE
   PROMPT
 
   def create
@@ -26,13 +18,22 @@ class MessagesController < ApplicationController
     @ruby_llm_chat = RubyLLM.chat
     build_conversation_history
     @message = @chat.messages.create!(message_params.merge(role: "user"))
-    response = @ruby_llm_chat.with_instructions(instructions).ask(@message.content)
 
-    display_content, game = extract_recommendation(response.content)
-    @assistant_message = @chat.messages.create(role: "assistant", content: display_content, game: game)
+    # Message assistant vide → affiche "..." immédiatement
+    @assistant_message = @chat.messages.create!(role: "assistant", content: "")
+
+    # Instancier le tool avec le user courant
+    @search_game_tool = SearchGameTool.new(user: current_user)
+
+    ask_llm
+
+    # Sauvegarder le contenu final + associer le jeu si le tool a été appelé
+    @assistant_message.update(
+      content: @assistant_message.content,
+      game:    @search_game_tool.found_game
+    )
+    broadcast_replace(@assistant_message) if @search_game_tool.found_game
     @chat.generate_title_from_conversation
-
-    redirect_to chat_path(@chat)
   end
 
   private
@@ -43,15 +44,34 @@ class MessagesController < ApplicationController
 
   def build_conversation_history
     @chat.messages.each do |message|
-      @ruby_llm_chat.add_message(
-        role: message.role,
-        content: message.content
-      )
+      next if message.content.blank?
+
+      @ruby_llm_chat.add_message(role: message.role, content: message.content)
     end
   end
 
+  def ask_llm
+    @ruby_llm_chat.with_instructions(instructions)
+    @ruby_llm_chat.with_tool(@search_game_tool)
+    @ruby_llm_chat.ask(@message.content) do |chunk|
+      next if chunk.content.blank?
+
+      @assistant_message.content += chunk.content
+      broadcast_replace(@assistant_message)
+    end
+  end
+
+  def broadcast_replace(message)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @chat,
+      target:  helpers.dom_id(message),
+      partial: "messages/message",
+      locals:  { message: message }
+    )
+  end
+
   def user_context
-    games = current_user.games
+    games    = current_user.games
     wishlist = games.select { |g| g.collection_status == "wishlist" }.map(&:title).join(", ")
     owned = games.select { |g| g.collection_status == "played" }.map(&:title).join(", ")
     devices = current_user.devices.join(", ")
@@ -63,35 +83,5 @@ class MessagesController < ApplicationController
 
   def instructions
     [SYSTEM_PROMPT, user_context].compact.join("\n\n")
-  end
-
-  def extract_recommendation(content)
-    extractor = RubyLLM.chat
-    title_response = extractor.with_instructions(EXTRACT_TITLE_PROMPT).ask(content)
-    game_title = title_response.content.strip
-
-    game = find_or_create_game(game_title) if game_title.present? && game_title.upcase != "NONE"
-
-    [content, game]
-  end
-
-  def find_or_create_game(title)
-    rawg = RawgService.new
-    results = rawg.search(title)
-    return nil if results.blank?
-
-    api_game = results.first
-    api_detail = rawg.find(api_game["id"])
-
-    game = current_user.games.find_or_initialize_by(title: api_game["name"])
-    game.assign_attributes(
-      genre: api_game.dig("genres", 0, "name"),
-      description: api_detail["description_raw"].presence,
-      cover_image: api_game["background_image"],
-      release_date: api_game["released"],
-      collection_status: game.collection_status.presence || "pending"
-    )
-    game.save
-    game
   end
 end
