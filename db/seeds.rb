@@ -1,163 +1,122 @@
-puts "Cleaning database to avoid duplicates..."
-User.destroy_all
-Chat.destroy_all
+puts "Cleaning database..."
 Message.destroy_all
-
-puts "--- Starting Database Seeding ---"
+Chat.destroy_all
+Game.destroy_all
+User.destroy_all
 
 puts "Creating users..."
 
-pixel_knight = User.create!(user_name: "PixelKnight", devices: ["PC", "PlayStation 5"], email: "pixel_knight@gmail.com", password: "story53421")
-cozy_gamer   = User.create!(user_name: "CozyGamer",   devices: ["Nintendo Switch", "iOS", "Android"], email: "cozy_gamer@gmail.com", password: "uwu53R272375")
-cyber_pulse  = User.create!(user_name: "CyberPulse",  devices: ["PC", "Xbox Series S/X"], email: "cyber_pulse@gmail.com", password: "dfatdz64527")
-
-puts "Populating users with games in all 4 statuses..."
-
-Game.create!(
-  title: "Elden Ring", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "Action-RPG",
-  description: "A challenging open-world action RPG set in a dark fantasy universe.",
-  studio: "FromSoftware", sales: 25_000_000, release_date: Date.parse("2022-02-25"),
-  collection_status: "played", user_id: pixel_knight.id
+pixel_knight = User.create!(
+  user_name: "PixelKnight",
+  devices:   ["PC", "PlayStation 5"],
+  email:     "pixel_knight@gmail.com",
+  password:  "story53421"
 )
 
-Game.create!(
-  title: "Hades", platform: ["PC", "PlayStation 5", "Nintendo Switch", "Xbox Series S/X"], genre: "Roguelike",
-  description: "Defy the god of the dead as you hack and slash out of the Underworld.",
-  studio: "Supergiant Games", sales: 6_000_000, release_date: Date.parse("2020-09-17"),
-  collection_status: "wishlist", user_id: pixel_knight.id
+cozy_gamer = User.create!(
+  user_name: "CozyGamer",
+  devices:   ["Nintendo Switch", "iOS", "Android"],
+  email:     "cozy_gamer@gmail.com",
+  password:  "uwu53R272375"
 )
 
-Game.create!(
-  title: "Dead Cells", platform: ["PC", "PlayStation 4", "Nintendo Switch", "Xbox One"], genre: "Roguelike",
-  description: "A roguelite metroidvania where you explore an ever-changing castle, assuming you're able to fight your way past its keepers.",
-  studio: "Motion Twin", sales: 10_000_000, release_date: Date.parse("2018-08-07"),
-  collection_status: "wishlist", user_id: pixel_knight.id
+cyber_pulse = User.create!(
+  user_name: "CyberPulse",
+  devices:   ["PC", "Xbox Series S/X"],
+  email:     "cyber_pulse@gmail.com",
+  password:  "dfatdz64527"
 )
 
-Game.create!(
-  title: "Stardew Valley", platform: ["PC", "PlayStation 4", "Nintendo Switch", "Xbox One", "Mobile"], genre: "Farming Sim",
-  description: "Inherit your grandfather's old farm plot and learn to live off the land in this open-ended country-life RPG.",
-  studio: "ConcernedApe", sales: 41_000_000, release_date: Date.parse("2016-02-26"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+# ---------------------------------------------------------------------------
+# Game lists per user  — title + collection_status
+# ---------------------------------------------------------------------------
 
-Game.create!(
-  title: "Celeste", platform: ["PC", "PlayStation 4", "Nintendo Switch", "Xbox One"], genre: "Platformer",
-  description: "Help Madeline survive her journey to the top of Celeste Mountain in this super-tight platformer about facing your inner demons.",
-  studio: "Maddy Makes Games", sales: 1_000_000, release_date: Date.parse("2018-01-25"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+PIXEL_KNIGHT_GAMES = [
+  { title: "Elden Ring",                    status: "played"    },
+  { title: "Hades",                         status: "played"    },
+  { title: "Dead Cells",                    status: "wishlist" },
+  { title: "Hollow Knight",                 status: "wishlist" },
+  { title: "Celeste",                       status: "played"    },
+  { title: "Cuphead",                       status: "pending"  },
+  { title: "Cult of the Lamb",              status: "wishlist" },
+  { title: "Disco Elysium",                 status: "pending"  },
+  { title: "Ori and the Will of the Wisps", status: "wishlist" },
+  { title: "Returnal",                      status: "skipped"  }
+].freeze
 
-Game.create!(
-  title: "Cuphead", platform: ["PC", "PlayStation 4", "Nintendo Switch", "Xbox One"], genre: "Run and Gun",
-  description: "A classic run and gun action game featuring traditional hand-drawn animation and inspired by the cartoons of the 1930s.",
-  studio: "Studio MDHR", sales: 8_000_000, release_date: Date.parse("2017-09-29"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+COZY_GAMER_GAMES = [
+  { title: "Animal Crossing New Horizons",  status: "played"    },
+  { title: "Stardew Valley",                status: "played"    },
+  { title: "Kirby and the Forgotten Land",  status: "wishlist" },
+  { title: "Unpacking",                     status: "played"    },
+  { title: "A Short Hike",                  status: "wishlist" },
+  { title: "Spiritfarer",                   status: "pending"  },
+  { title: "Coffee Talk",                   status: "wishlist" },
+  { title: "Cozy Grove",                    status: "wishlist" },
+  { title: "Dorfromantik",                  status: "skipped"  },
+  { title: "Mineko's Night Market",         status: "pending"  }
+].freeze
 
-Game.create!(
-  title: "Undertale", platform: ["PC", "PlayStation 4", "Nintendo Switch", "Xbox One"], genre: "RPG",
-  description: "A small RPG where every monster can be befriended, every battle solved without violence, and your choices truly matter.",
-  studio: "Toby Fox", sales: 5_000_000, release_date: Date.parse("2015-09-15"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+CYBER_PULSE_GAMES = [
+  { title: "Cyberpunk 2077",                status: "played"    },
+  { title: "Red Dead Redemption 2",         status: "played"    },
+  { title: "Baldur's Gate 3",               status: "played"    },
+  { title: "The Witcher 3 Wild Hunt",       status: "wishlist" },
+  { title: "Starfield",                     status: "pending"  },
+  { title: "Halo Infinite",                 status: "wishlist" },
+  { title: "Forza Horizon 5",               status: "played"    },
+  { title: "Control",                       status: "skipped"  },
+  { title: "Doom Eternal",                  status: "wishlist" },
+  { title: "Assassin's Creed Odyssey",      status: "pending"  }
+].freeze
 
-Game.create!(
-  title: "Cult of the Lamb", platform: ["PC", "PlayStation 5", "Nintendo Switch", "Xbox Series S/X"], genre: "Roguelike",
-  description: "Build a loyal following of woodland worshippers and spread your Word to become the one true cult.",
-  studio: "Massive Monster", sales: 3_500_000, release_date: Date.parse("2022-08-11"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+# ---------------------------------------------------------------------------
+# Seed helper — fetch from RAWG and create game for a given user
+# ---------------------------------------------------------------------------
 
-Game.create!(
-  title: "Slay the Spire", platform: ["PC", "PlayStation 4", "Nintendo Switch", "Xbox One", "Mobile"], genre: "Deck-Building Roguelike",
-  description: "Craft a unique deck, encounter bizarre creatures, discover relics of immense power, and Slay the Spire!",
-  studio: "Mega Crit Games", sales: 5_000_000, release_date: Date.parse("2019-01-23"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+def seed_game(user:, title:, status:)
+  rawg = RawgService.new
+  results = rawg.search(title)
 
-Game.create!(
-  title: "Ori and the Will of the Wisps", platform: ["PC", "Nintendo Switch", "Xbox One", "Xbox Series S/X"], genre: "Metroidvania",
-  description: "Embark on an all-new adventure in a vast world filled with new friends and foes that come to life in stunning hand-painted artwork.",
-  studio: "Moon Studios", sales: 2_500_000, release_date: Date.parse("2020-03-11"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+  if results.blank?
+    puts "  ⚠️  No RAWG result for '#{title}' — skipping"
+    return
+  end
 
-Game.create!(
-  title: "Disco Elysium", platform: ["PC", "PlayStation 4", "PlayStation 5", "Nintendo Switch", "Xbox One", "Xbox Series S/X"], genre: "RPG",
-  description: "A groundbreaking role playing game. You're a detective with a unique skill system at your disposal and a whole city block to carve your path across.",
-  studio: "ZA/UM", sales: 1_500_000, release_date: Date.parse("2019-10-15"),
-  collection_status: "wishlist", user_id: pixel_knight.id
-)
+  api_game   = results.first
+  api_detail = rawg.find(api_game["id"])
 
-Game.create!(
-  title: "Hollow Knight", platform: ["PC", "PlayStation 5", "Nintendo Switch", "Xbox Series S/X"], genre: "Metroidvania",
-  description: "An epic action adventure through a vast ruined kingdom of insects.",
-  studio: "Team Cherry", sales: 3_000_000, release_date: Date.parse("2017-02-24"),
-  collection_status: "pending", user_id: pixel_knight.id
-)
+  platforms = api_game["platforms"]&.map { |p| p.dig("platform", "name") }&.compact || []
+  studio    = api_detail["developers"]&.map { |d| d["name"] }&.join(", ").presence
 
-Game.create!(
-  title: "Cyberpunk 2077", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "Sci-Fi RPG",
-  description: "An open-world, action-adventure story set in the megalopolis of Night City.",
-  studio: "CD Projekt Red", sales: 25_000_000, release_date: Date.parse("2020-12-10"),
-  collection_status: "skipped", user_id: pixel_knight.id
-)
+  game = user.games.find_or_initialize_by(title: api_game["name"])
+  game.assign_attributes(
+    genre:              api_game.dig("genres", 0, "name"),
+    platform:           platforms,
+    studio:             studio,
+    description:        api_detail["description_raw"].presence,
+    cover_image:        api_game["background_image"],
+    release_date:       api_game["released"],
+    collection_status:  status
+  )
+  game.save!
+  puts "  ✅  #{game.title} (#{status})"
+rescue => e
+  puts "  ❌  #{title} — #{e.message}"
+end
 
-Game.create!(
-  title: "Animal Crossing: New Horizons", platform: ["Nintendo Switch"], genre: "Simulation",
-  description: "Escape to a deserted island and create your own paradise.",
-  studio: "Nintendo", sales: 44_000_000, release_date: Date.parse("2020-03-20"),
-  collection_status: "played", user_id: cozy_gamer.id
-)
+# ---------------------------------------------------------------------------
+# Seeding
+# ---------------------------------------------------------------------------
 
-Game.create!(
-  title: "Stardew Valley", platform: ["PC", "PlayStation 5", "Nintendo Switch", "iOS", "Android"], genre: "Simulation",
-  description: "An open-ended country-life RPG. Build the farm of your dreams.",
-  studio: "ConcernedApe", sales: 30_000_000, release_date: Date.parse("2016-02-26"),
-  collection_status: "wishlist", user_id: cozy_gamer.id
-)
+puts "\nSeeding PixelKnight's games..."
+PIXEL_KNIGHT_GAMES.each { |g| seed_game(user: pixel_knight, title: g[:title], status: g[:status]) }
 
-Game.create!(
-  title: "Slay the Spire", platform: ["PC", "Nintendo Switch", "iOS", "Android"], genre: "Card Battler",
-  description: "A fusion of card games and roguelikes. Craft a unique deck.",
-  studio: "Mega Crit Games", sales: 4_500_000, release_date: Date.parse("2019-01-23"),
-  collection_status: "pending", user_id: cozy_gamer.id
-)
+puts "\nSeeding CozyGamer's games..."
+COZY_GAMER_GAMES.each { |g| seed_game(user: cozy_gamer, title: g[:title], status: g[:status]) }
 
-Game.create!(
-  title: "Hades", platform: ["PC", "PlayStation 5", "Nintendo Switch", "Xbox Series S/X"], genre: "Roguelike",
-  description: "Defy the god of the dead as you hack and slash out of the Underworld.",
-  studio: "Supergiant Games", sales: 6_000_000, release_date: Date.parse("2020-09-17"),
-  collection_status: "skipped", user_id: cozy_gamer.id
-)
+puts "\nSeeding CyberPulse's games..."
+CYBER_PULSE_GAMES.each { |g| seed_game(user: cyber_pulse, title: g[:title], status: g[:status]) }
 
-Game.create!(
-  title: "Baldur's Gate 3", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "RPG",
-  description: "Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal.",
-  studio: "Larian Studios", sales: 15_000_000, release_date: Date.parse("2023-08-03"),
-  collection_status: "played", user_id: cyber_pulse.id
-)
-
-Game.create!(
-  title: "Red Dead Redemption 2", platform: ["PC", "Xbox One", "PlayStation 4"], genre: "Action-Adventure",
-  description: "An epic tale of life in America's unforgiving heartland at the dawning of the modern age.",
-  studio: "Rockstar Games", sales: 65_000_000, release_date: Date.parse("2018-10-26"),
-  collection_status: "wishlist", user_id: cyber_pulse.id
-)
-
-Game.create!(
-  title: "Cyberpunk 2077", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "Sci-Fi RPG",
-  description: "An open-world, action-adventure story set in the megalopolis of Night City.",
-  studio: "CD Projekt Red", sales: 25_000_000, release_date: Date.parse("2020-12-10"),
-  collection_status: "pending", user_id: cyber_pulse.id
-)
-
-Game.create!(
-  title: "Elden Ring", platform: ["PC", "PlayStation 5", "Xbox Series S/X"], genre: "Action-RPG",
-  description: "A challenging open-world action RPG set in a dark fantasy universe.",
-  studio: "FromSoftware", sales: 25_000_000, release_date: Date.parse("2022-02-25"),
-  collection_status: "skipped", user_id: cyber_pulse.id
-)
-
-puts "--- Seed successfully executed! 🚀 ---"
+puts "\n--- Seed successfully executed! 🚀 ---"
+puts "Users: #{User.count} | Games: #{Game.count}"
