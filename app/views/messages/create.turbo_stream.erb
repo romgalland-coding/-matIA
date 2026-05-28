@@ -1,6 +1,10 @@
-<%# Mise à jour finale du message assistant (game card incluse si un jeu a été trouvé) %>
-<%= turbo_stream.replace dom_id(@assistant_message) do %>
-  <%= render "messages/message", message: @assistant_message %>
+<%# Pour les messages texte uniquement : le broadcast_full_replace (ActionCable) gère déjà
+    les messages avec game card — re-remplacer via HTTP provoquerait une race condition
+    si l'user clique avant que la réponse HTTP arrive (pendant generate_title_from_conversation) %>
+<% unless @assistant_message.game.present? %>
+  <%= turbo_stream.replace dom_id(@assistant_message) do %>
+    <%= render "messages/message", message: @assistant_message %>
+  <% end %>
 <% end %>
 
 <% if @chat.title_previously_changed? %>

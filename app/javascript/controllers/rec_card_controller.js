@@ -37,7 +37,12 @@ export default class extends Controller {
   }
 
   async _patchGame(form) {
-    await fetch(form.action, { method: "POST", body: new FormData(form) })
+    const formData = new FormData(form)
+    // Le token CSRF dans le formulaire peut être invalide si le formulaire a été
+    // rendu par ActionCable (contexte sans session). On utilise celui du meta tag.
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+    if (csrfToken) formData.set('authenticity_token', csrfToken)
+    await fetch(form.action, { method: "POST", body: formData })
   }
 
   _setSkipMessage(message) {
