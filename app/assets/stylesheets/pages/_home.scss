@@ -3,77 +3,83 @@
   margin: 0 auto;
 }
 
-.home-eyebrow {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.4rem;
-}
-
 .home-title {
   font-size: 2.75rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.03em;
   color: #000;
 
-  em {
-    font-style: italic;
+  em { font-style: italic; }
+}
+
+.home-subtitle {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.5);
+  margin: 0.25rem 0 0;
+}
+
+// 3x2 game cover grid
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 4px;
+  border-radius: 1.25rem;
+  border: 2.5px solid #000;
+  box-shadow: 4px 4px 0 0 #000;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+
+  &__cell {
+    background-size: cover;
+    background-position: center;
+    background-color: $mat-blue-light;
   }
 }
 
-.home-icon-wrap {
-  padding: 0.5rem;
-  background-color: $mat-blue;
-  border-radius: 0.75rem;
-  border: 2px solid #000;
-
-  i { font-size: 1.1rem; }
-}
-
-.home-card-text {
-  font-size: 1.0625rem;
-  line-height: 1.5;
-  color: #000;
-}
-
-.home-feature-card {
-  border-radius: 1rem;
-  padding: 1rem;
-  min-height: 110px;
+// Feature rows
+.home-features {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+}
 
-  i {
-    font-size: 1.5rem;
-    color: #000;
+.home-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.875rem 0;
+
+  &__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    border: 2px solid #000;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
   }
 
-  p {
-    margin: 0;
+  &__title {
     font-weight: 700;
     font-size: 0.9375rem;
-    color: #000;
+    margin: 0 0 0.2rem;
   }
 
-  &--yellow { background-color: $mat-yellow; }
-  &--green  { background-color: $mat-green; }
-}
+  &__desc {
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.55);
+    margin: 0;
+    line-height: 1.45;
+  }
 
-.home-cta-bar {
-  position: fixed;
-  bottom: 6rem;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 12rem;
+  &__divider {
+    margin: 0;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 .home-cta {

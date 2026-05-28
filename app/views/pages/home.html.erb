@@ -1,33 +1,40 @@
 <div class="home-page px-4 pt-5">
 
-  <header class="mb-4">
-    <p class="home-eyebrow">MEET YOUR GAME GUIDE</p>
-    <h1 class="home-title">What's <em>matIA</em>?</h1>
+  <header class="text-center mb-4">
+    <h1 class="home-title">meet <em>matIA</em></h1>
+    <p class="home-subtitle">Discover your next favourite game.</p>
   </header>
 
-  <div class="card card-blue p-4 mb-4">
-    <div class="d-flex align-items-start gap-3">
-      <div class="home-icon-wrap flex-shrink-0">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-      </div>
-      <p class="mb-0 home-card-text">
-        matIA transforms how you discover and organize games — no endless browsing,
-        just an AI chatbot that understands exactly what you want to play.
-      </p>
+  <% if @cover_images.any? %>
+    <div class="home-grid mb-4">
+      <% @cover_images.each do |url| %>
+        <div class="home-grid__cell" style="background-image: url('<%= url %>')"></div>
+      <% end %>
     </div>
-  </div>
+  <% end %>
 
-  <div class="row g-3 mb-4">
-    <div class="col-6">
-      <div class="home-feature-card home-feature-card--yellow">
-        <i class="fa-solid fa-gamepad"></i>
-        <p>Personalized picks</p>
+  <div class="home-features mb-4">
+    <div class="home-feature">
+      <div class="home-feature__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <div>
+        <p class="home-feature__title">AI-powered picks</p>
+        <p class="home-feature__desc">Chat about what you're in the mood for — matIA does the rest.</p>
       </div>
     </div>
-    <div class="col-6">
-      <div class="home-feature-card home-feature-card--green">
-        <i class="fa-solid fa-heart"></i>
-        <p>Track your library</p>
+    <hr class="home-feature__divider">
+    <div class="home-feature">
+      <div class="home-feature__icon"><i class="fa-solid fa-gamepad"></i></div>
+      <div>
+        <p class="home-feature__title">Personalised to you</p>
+        <p class="home-feature__desc">The more you use it, the smarter your recommendations get.</p>
+      </div>
+    </div>
+    <hr class="home-feature__divider">
+    <div class="home-feature">
+      <div class="home-feature__icon"><i class="fa-solid fa-list-check"></i></div>
+      <div>
+        <p class="home-feature__title">Organise your library</p>
+        <p class="home-feature__desc">Track what you own and build a wishlist of what's next.</p>
       </div>
     </div>
   </div>
@@ -39,7 +46,7 @@
       <% end %>
     <% else %>
       <%= link_to new_user_registration_path, class: "btn btn-primary w-100 py-3 home-cta" do %>
-        <i class="fa-solid fa-message me-2"></i>Create an account to start chatting
+        <i class="fa-solid fa-message me-2"></i>Create an account
       <% end %>
       <%= link_to "I already have an account", new_user_session_path, class: "home-signin-link text-center" %>
     <% end %>
