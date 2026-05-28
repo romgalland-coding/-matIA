@@ -86,14 +86,16 @@ def seed_game(user:, title:, status:)
   api_game   = results.first
   api_detail = rawg.find(api_game["id"])
 
-  platforms = api_game["platforms"]&.map { |p| p.dig("platform", "name") }&.compact || []
-  studio    = api_detail["developers"]&.map { |d| d["name"] }&.join(", ").presence
+  platforms  = api_game["platforms"]&.map { |p| p.dig("platform", "name") }&.compact || []
+  studio     = api_detail["developers"]&.map { |d| d["name"] }&.join(", ").presence
+  metacritic = api_game["metacritic"]
 
   game = user.games.find_or_initialize_by(title: api_game["name"])
   game.assign_attributes(
     genre:              api_game.dig("genres", 0, "name"),
     platform:           platforms,
     studio:             studio,
+    metacritic:         metacritic,
     description:        api_detail["description_raw"].presence,
     cover_image:        api_game["background_image"],
     release_date:       api_game["released"],

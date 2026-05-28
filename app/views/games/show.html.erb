@@ -13,7 +13,14 @@
   <% if @game.genre.present? %>
     <p class="text-uppercase fw-semibold text-muted small mb-1"><%= @game.genre %></p>
   <% end %>
-  <h1 class="fw-bold mb-3" style="font-size: 2rem; line-height: 1.1;"><%= @game.title %></h1>
+  <div class="d-flex align-items-center gap-3 mb-3">
+    <h1 class="fw-bold mb-0" style="font-size: 2rem; line-height: 1.1;"><%= @game.title %></h1>
+    <% if @game.metacritic.present? %>
+      <span class="metacritic-badge metacritic-badge--lg metacritic-badge--<%= @game.metacritic >= 75 ? 'green' : (@game.metacritic >= 50 ? 'yellow' : 'red') %>">
+        <%= @game.metacritic %>
+      </span>
+    <% end %>
+  </div>
 
   <% if @game.cover_image.present? %>
     <div class="game-show__hero mb-3" style="background-image: url('<%= @game.cover_image %>')"></div>
