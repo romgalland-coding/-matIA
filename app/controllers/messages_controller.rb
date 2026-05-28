@@ -29,7 +29,7 @@ class MessagesController < ApplicationController
       content: @assistant_message.content,
       game:    @search_game_tool.found_game
     )
-    broadcast_replace(@assistant_message) if @search_game_tool.found_game
+    broadcast_full_replace(@assistant_message)
     @chat.generate_title_from_conversation
   end
 
@@ -54,11 +54,23 @@ class MessagesController < ApplicationController
       next if chunk.content.blank?
 
       @assistant_message.content += chunk.content
-      broadcast_replace(@assistant_message)
+      broadcast_content(@assistant_message)
     end
   end
 
-  def broadcast_replace(message)
+  # Pendant le streaming : met à jour uniquement le texte (cible _content)
+  # → n'écrase jamais la game card
+  def broadcast_content(message)
+    Turbo::StreamsChannel.broadcast_update_to(
+      @chat,
+      target:  helpers.dom_id(message, :content),
+      partial: "messages/message_content",
+      locals:  { message: message }
+    )
+  end
+
+  # Après le stream : remplace le message complet (texte + game card)
+  def broadcast_full_replace(message)
     Turbo::StreamsChannel.broadcast_replace_to(
       @chat,
       target:  helpers.dom_id(message),
