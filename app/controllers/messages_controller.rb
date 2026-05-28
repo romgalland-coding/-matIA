@@ -22,6 +22,12 @@ class MessagesController < ApplicationController
     @search_game_tool = SearchGameTool.new(user: current_user)
     ask_llm
     finalize_assistant_message
+
+    @assistant_message.update(
+      content: @assistant_message.content,
+      game:    @search_game_tool.found_game
+    )
+    @assistant_message.reload
     @chat.generate_title_from_conversation
     notify_limit_if_reached
   end

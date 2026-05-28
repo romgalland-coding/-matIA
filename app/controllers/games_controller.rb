@@ -1,6 +1,8 @@
 class GamesController < ApplicationController
   def index
-    @games = current_user.games
+    @sort = params[:sort].presence_in(Game::SORT_FIELDS) || "title"
+    @direction = params[:direction].presence_in(Game::SORT_DIRECTIONS) || "asc"
+    @games = current_user.games.sorted_by(@sort, @direction)
   end
 
   def update
