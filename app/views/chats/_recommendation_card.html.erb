@@ -1,46 +1,44 @@
-<div class="rec-card-stack">
-  <div class="rec-card" data-controller="rec-card">
-    <% if game.cover_image.present? %>
-      <div class="rec-card__cover" style="background-image: url('<%= game.cover_image %>')"></div>
-    <% else %>
-      <div class="rec-card__cover rec-card__cover--placeholder">
-        <i class="fa-solid fa-gamepad"></i>
-      </div>
+<div class="rec-card" data-controller="rec-card">
+  <% if game.cover_image.present? %>
+    <div class="rec-card__cover" style="background-image: url('<%= game.cover_image %>')"></div>
+  <% else %>
+    <div class="rec-card__cover rec-card__cover--placeholder">
+      <i class="fa-solid fa-gamepad"></i>
+    </div>
+  <% end %>
+  <div class="rec-card__body">
+    <p class="rec-card__title"><%= game.title %></p>
+    <div class="rec-card__meta">
+      <% if game.genre.present? %>
+        <span class="rec-card__tag"><%= game.genre %></span>
+      <% end %>
+      <% if game.release_date.present? %>
+        <span class="rec-card__tag rec-card__tag--muted"><%= game.release_date.year %></span>
+      <% end %>
+    </div>
+    <% if game.description.present? %>
+      <p class="rec-card__desc"><%= truncate(game.description, length: 120) %></p>
     <% end %>
-    <div class="rec-card__body">
-      <p class="rec-card__title"><%= game.title %></p>
-      <div class="rec-card__meta">
-        <% if game.genre.present? %>
-          <span class="rec-card__tag"><%= game.genre %></span>
-        <% end %>
-        <% if game.release_date.present? %>
-          <span class="rec-card__tag rec-card__tag--muted"><%= game.release_date.year %></span>
-        <% end %>
-      </div>
-      <% if game.description.present? %>
-        <p class="rec-card__desc"><%= truncate(game.description, length: 120) %></p>
-      <% end %>
-    </div>
-    <div class="rec-card__actions">
-      <%= button_to game_path(game), method: :patch, params: { collection_status: "wishlist" },
-          class: "btn btn-primary rec-card__btn",
-          form: { data: { rec_card_target: "wishlistForm" } },
-          data: { action: "click->rec-card#wishlist" } do %>
-        <i class="fa-solid fa-bookmark"></i> Wishlist
-      <% end %>
-      <%= button_to game_path(game), method: :patch, params: { collection_status: "played" },
-          class: "btn btn-success rec-card__btn",
-          form: { data: { rec_card_target: "playedForm" } },
-          data: { action: "click->rec-card#played" } do %>
-        <i class="fa-solid fa-gamepad"></i> Played
-      <% end %>
-      <%= button_to chat_messages_path(chat), method: :post,
-          params: { message: { content: "Skip this game and recommend me another one" } },
-          class: "btn btn-danger rec-card__btn",
-          form: { data: { rec_card_target: "skipForm" } },
-          data: { action: "click->rec-card#skip" } do %>
-        <i class="fa-solid fa-forward"></i> Skip
-      <% end %>
-    </div>
+  </div>
+  <div class="rec-card__actions">
+    <%= button_to game_path(game), method: :patch, params: { collection_status: "wishlist" },
+        class: "btn btn-primary rec-card__btn",
+        form: { data: { rec_card_target: "wishlistForm" } },
+        data: { action: "click->rec-card#wishlist" } do %>
+      <i class="fa-solid fa-bookmark"></i> Wishlist
+    <% end %>
+    <%= button_to game_path(game), method: :patch, params: { collection_status: "played" },
+        class: "btn btn-success rec-card__btn",
+        form: { data: { rec_card_target: "playedForm" } },
+        data: { action: "click->rec-card#played" } do %>
+      <i class="fa-solid fa-gamepad"></i> Played
+    <% end %>
+    <%= button_to chat_messages_path(chat), method: :post,
+        params: { message: { content: "Skip this game and recommend me another one" } },
+        class: "btn btn-danger rec-card__btn",
+        form: { data: { rec_card_target: "skipForm" } },
+        data: { action: "click->rec-card#skip" } do %>
+      <i class="fa-solid fa-forward"></i> Skip
+    <% end %>
   </div>
 </div>

@@ -5,7 +5,7 @@ export default class extends Controller {
 
   wishlist(event) {
     event.preventDefault()
-    this._animate("rec-card--action-wishlist", "rec-card--to-wishlist", async () => {
+    this._act("rec-card--action-wishlist", async () => {
       await this._patchGame(this.wishlistFormTarget)
       this._setSkipMessage("I added this game to my wishlist, recommend me a different game.")
       this.skipFormTarget.requestSubmit()
@@ -14,7 +14,7 @@ export default class extends Controller {
 
   played(event) {
     event.preventDefault()
-    this._animate("rec-card--action-played", "rec-card--to-played", async () => {
+    this._act("rec-card--action-played", async () => {
       await this._patchGame(this.playedFormTarget)
       this._setSkipMessage("I already played this game, recommend me a different game.")
       this.skipFormTarget.requestSubmit()
@@ -23,16 +23,17 @@ export default class extends Controller {
 
   skip(event) {
     event.preventDefault()
-    this._animate("rec-card--action-skip", "rec-card--to-skip", () => {
+    this._act("rec-card--action-skip", () => {
       this.skipFormTarget.requestSubmit()
     })
   }
 
-  _animate(actionClass, slideClass, callback) {
-    this.element.classList.add(actionClass)
+  _act(colorClass, callback) {
+    this.element.classList.add(colorClass)
+    const actions = this.element.querySelector(".rec-card__actions")
+    if (actions) actions.style.display = "none"
     this.element.style.pointerEvents = "none"
-    setTimeout(() => this.element.classList.add(slideClass), 80)
-    setTimeout(callback, 460)
+    callback()
   }
 
   async _patchGame(form) {
