@@ -18,11 +18,13 @@ class SearchGameTool < RubyLLM::Tool
     api_detail = rawg.find(api_game["id"])
 
     platforms = api_game["platforms"]&.map { |p| p.dig("platform", "name") }&.compact || []
+    studio    = api_detail["developers"]&.map { |d| d["name"] }&.join(", ").presence
 
     game = @user.games.find_or_initialize_by(title: api_game["name"])
     game.assign_attributes(
       genre:              api_game.dig("genres", 0, "name"),
       platform:           platforms,
+      studio:             studio,
       description:        api_detail["description_raw"].presence,
       cover_image:        api_game["background_image"],
       release_date:       api_game["released"],
@@ -35,6 +37,7 @@ class SearchGameTool < RubyLLM::Tool
       title:        game.title,
       genre:        game.genre,
       platforms:    platforms,
+      studio:       game.studio,
       release_date: game.release_date&.to_s,
       cover_image:  game.cover_image
     }
