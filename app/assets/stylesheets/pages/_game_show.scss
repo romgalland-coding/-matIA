@@ -54,7 +54,7 @@
   font-size: 0.875rem;
   box-shadow: 3px 3px 0 0 #000;
 
-  &--owned    { background-color: $mat-red-light; }
+  &--played   { background-color: $mat-red-light; }
   &--wishlist { background-color: $mat-blue-light; }
   &--pending  { background-color: $mat-yellow-light; }
   &--skipped  { background-color: $mat-green-light; }
