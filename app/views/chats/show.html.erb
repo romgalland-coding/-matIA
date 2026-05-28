@@ -20,7 +20,14 @@
 
   <div class="chat-input-bar">
     <div id="new_message_container">
-      <%= render "messages/form", chat: @chat, message: Message.new %>
+      <% if @limit_reached %>
+        <p class="chat-limit-notice">🔒 Message limit reached</p>
+        <%= button_to chats_path, method: :post, class: "btn btn-primary w-100 py-3 home-cta" do %>
+          <i class="fa-solid fa-message me-2"></i>Start a new chat
+        <% end %>
+      <% else %>
+        <%= render "messages/form", chat: @chat, message: Message.new %>
+      <% end %>
     </div>
   </div>
 
