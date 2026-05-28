@@ -93,14 +93,53 @@
 }
 
 // Game recommendation card
-.rec-card {
+@keyframes rec-card-wishlist {
+  to { transform: translateX(-130%) rotate(-15deg); opacity: 0; }
+}
+@keyframes rec-card-played {
+  to { transform: translateY(-80%) scale(0.85); opacity: 0; }
+}
+@keyframes rec-card-skip {
+  to { transform: translateX(130%) rotate(12deg); opacity: 0; }
+}
+
+.rec-card-stack {
+  position: relative;
   margin-top: 0.75rem;
+  max-width: 300px;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2.5px solid #000;
+    border-radius: 1.25rem;
+    background-color: white;
+    box-shadow: 3px 3px 0 0 rgba(0,0,0,0.3);
+  }
+
+  &::before { transform: rotate(2.5deg) translateY(5px); z-index: 0; }
+  &::after  { transform: rotate(-1.5deg) translateY(8px); z-index: -1; }
+}
+
+.rec-card {
+  position: relative;
+  z-index: 1;
   border: 2.5px solid #000;
   border-radius: 1.25rem;
   box-shadow: 4px 4px 0 0 #000;
   overflow: hidden;
   background-color: white;
-  max-width: 300px;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+
+  &--action-wishlist { border-color: $mat-blue;  box-shadow: 4px 4px 0 0 $mat-blue; }
+  &--action-played   { border-color: $mat-green; box-shadow: 4px 4px 0 0 $mat-green; }
+  &--action-skip     { border-color: $mat-red;   box-shadow: 4px 4px 0 0 $mat-red; }
+
+  &--to-wishlist { animation: rec-card-wishlist 0.38s ease-in forwards; }
+  &--to-played   { animation: rec-card-played   0.38s ease-in forwards; }
+  &--to-skip     { animation: rec-card-skip     0.38s ease-in forwards; }
 
   &__cover {
     width: 100%;
