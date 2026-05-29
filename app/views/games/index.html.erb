@@ -2,17 +2,15 @@
 
   <div class="games-title-row">
     <h1 class="games-title">My library</h1>
-    <button id="edit-btn" class="game-edit-btn d-none" data-action="click->edit-mode#toggle">
-      <i class="fa-solid fa-pen-to-square"></i> Edit
-    </button>
-  </div>
-
-  <div class="games-sort-container mb-4">
-    <button id="games-sort-toggle" type="button" class="games-sort-toggle" aria-expanded="false" aria-controls="games-sort-panel" onclick="toggleSortPanel()">
-      <i class="fa-solid fa-filter me-2"></i> Sort/filter
-    </button>
-
-    <div id="games-sort-panel" class="games-sort-panel d-none" data-controller="games-filter">
+    <div class="games-controls">
+      <button id="games-sort-toggle" type="button" class="games-sort-toggle" aria-expanded="false" aria-controls="games-sort-panel" onclick="toggleSortPanel()">
+        <i class="fa-solid fa-filter" id="filter-icon"></i>
+        <span>Sort/filter</span>
+      </button>
+      <button id="edit-btn" class="game-edit-btn d-none" data-action="click->edit-mode#toggle">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </button>
+      <div id="games-sort-panel" class="games-sort-panel d-none" data-controller="games-filter">
       <%= form_with url: games_path, method: :get, local: false, class: "games-filter-form", data: { games_filter_target: "form", action: "submit->games-filter#submitForm" } do %>
         <div class="games-sort-row">
           <span class="games-sort-label">Sort by</span>
@@ -54,6 +52,7 @@
           <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary", data: { action: "click->games-filter#clearFilters" } %>
         </div>
       <% end %>
+      </div>
     </div>
   </div>
   <p class="games-subtitle">Keep track of what you love and want next.</p>
@@ -175,8 +174,10 @@
   function toggleSortPanel() {
     const panel = document.getElementById('games-sort-panel');
     const button = document.getElementById('games-sort-toggle');
+    const icon = document.getElementById('filter-icon');
     const isHidden = panel.classList.toggle('d-none');
     button.setAttribute('aria-expanded', String(!isHidden));
+    icon.classList.toggle('filter-icon--open');
   }
 
   // Check URL parameter for initial tab
