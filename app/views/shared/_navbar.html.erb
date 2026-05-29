@@ -1,9 +1,7 @@
+<% return unless user_signed_in? %>
+
 <nav class="bottom-nav__bar">
   <div class="bottom-nav__items">
-    <%= link_to root_path, class: "bottom-nav__item #{"bottom-nav__item--active" if current_page?(root_path)}" do %>
-      <i class="fa-solid fa-house"></i>
-      <span>Home</span>
-    <% end %>
 
     <% if user_signed_in? && (chat = current_user.chats.order(created_at: :desc).first) %>
       <%= link_to chat_path(chat), class: "bottom-nav__item #{"bottom-nav__item--active" if request.path.start_with?("/chats")}" do %>
