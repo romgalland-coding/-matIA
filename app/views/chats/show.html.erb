@@ -8,13 +8,21 @@
       <span class="chat-header__app-name">matIA</span>
       <span id="chat_title" class="chat-header__chat-title"><%= @chat.title %></span>
     </div>
+    <%= button_to chats_path, method: :post, class: "chat-header__new", form: { style: "display:contents" } do %>
+      <i class="fa-solid fa-plus"></i>
+    <% end %>
   </header>
 
   <div class="chat-sidebar">
     <div class="chat-sidebar__overlay" data-action="click->chat-sidebar#close"></div>
     <div class="chat-sidebar__panel">
       <div class="chat-sidebar__header">
-        <span class="chat-sidebar__heading">Chats</span>
+        <div class="chat-sidebar__header-left">
+          <span class="chat-sidebar__heading">Chats</span>
+          <%= button_to chats_path, method: :post, class: "chat-sidebar__create" do %>
+            <i class="fa-solid fa-plus"></i> Create new
+          <% end %>
+        </div>
         <button class="chat-sidebar__close" data-action="click->chat-sidebar#close">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -27,9 +35,6 @@
           <% end %>
         <% end %>
       </div>
-      <%= button_to chats_path, method: :post, class: "chat-sidebar__new" do %>
-        <i class="fa-solid fa-plus"></i> New chat
-      <% end %>
     </div>
   </div>
 
