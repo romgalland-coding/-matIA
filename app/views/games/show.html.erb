@@ -53,8 +53,14 @@
   <% end %>
 </div>
 
-  <%= button_to game_path(@game), method: :patch, params: { collection_status: "owned" }, class: "btn btn-primary w-100 py-3" do %>
-    <i class="fa-solid fa-check"></i> Mark as owned
+  <% if @game.collection_status == "pending" %>
+    <%= button_to game_path(@game), method: :patch, params: { collection_status: "wishlist" }, class: "btn btn-primary w-100 py-3" do %>
+      <i class="fa-solid fa-heart"></i> Add to wishlist
+    <% end %>
+  <% else %>
+    <%= button_to game_path(@game), method: :patch, params: { collection_status: "played" }, class: "btn btn-primary w-100 py-3" do %>
+      <i class="fa-solid fa-check"></i> Mark as played
+    <% end %>
   <% end %>
 
   <% if @similar_games.any? %>
