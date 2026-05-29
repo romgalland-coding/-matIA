@@ -92,6 +92,7 @@ def seed_game(user:, title:, status:)
 
   game = user.games.find_or_initialize_by(title: api_game["name"])
   game.assign_attributes(
+    rawg_id:            api_game["id"],
     genre:              api_game.dig("genres", 0, "name"),
     platform:           platforms,
     studio:             studio,
