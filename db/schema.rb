@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_144039) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_29_085136) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,6 +30,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_144039) do
     t.string "genre"
     t.integer "metacritic"
     t.string "platform", default: [], array: true
+    t.integer "rawg_id"
     t.date "release_date"
     t.integer "sales"
     t.string "studio"

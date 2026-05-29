@@ -1,0 +1,23 @@
+<div class="game-card">
+  <%= link_to game_path(game), class: "game-card__link" do %>
+    <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
+      <% unless game.cover_image.present? %>
+        <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+      <% end %>
+      <% if game.metacritic.present? %>
+        <span class="metacritic-badge metacritic-badge--<%= game.metacritic >= 75 ? 'green' : (game.metacritic >= 50 ? 'yellow' : 'red') %>">
+          <%= game.metacritic %>
+        </span>
+      <% end %>
+    </div>
+    <div class="game-card__body">
+      <p class="game-card__title"><%= game.title %></p>
+      <p class="game-card__genre"><%= game.genre %></p>
+    </div>
+  <% end %>
+  <div class="game-card__footer">
+    <%= button_to game_path(game), method: :patch, params: { collection_status: "wishlist" }, class: "game-card__action game-card__action--blue" do %>
+      <i class="fa-solid fa-heart"></i> Add to wishlist
+    <% end %>
+  </div>
+</div>

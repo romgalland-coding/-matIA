@@ -57,4 +57,15 @@
     <i class="fa-solid fa-check"></i> Mark as owned
   <% end %>
 
+  <% if @similar_games.any? %>
+  <div class="mt-4">
+    <h2 class="fw-bold mb-3" style="font-size: 1.25rem;">Similar games</h2>
+    <div class="games-grid">
+      <% @similar_games.each do |game| %>
+        <%= render "games/similar_game_card", game: game %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
 </div>

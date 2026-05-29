@@ -23,16 +23,21 @@ class RawgService
     response.parsed_response
   end
 
-  def recommendations_for(user, query)
-    platform_ids = platform_ids_for(user.devices)
-    response = HTTParty.get("#{BASE_URL}/games", query: {
-      key: @api_key,
-      search: query,
-      platforms: platform_ids.join(","),
-      ordering: "-rating",
-      page_size: 5
-    })
-    response["results"]
+  def by_genre(genre_name, exclude_rawg_id:, devices: [])
+    genre_slug = genre_name.downcase.gsub(/[^a-z0-9]+/, '-').gsub(/-+\z/, '')
+    platform_ids = platform_ids_for(devices)
+
+    query = {
+      key:      @api_key,
+      genres:   genre_slug,
+      ordering: "-metacritic",
+      page_size: 10
+    }
+    query[:platforms] = platform_ids.join(",") if platform_ids.any?
+
+    response = HTTParty.get("#{BASE_URL}/games", query: query)
+    results = response["results"] || []
+    results.reject { |g| g["id"] == exclude_rawg_id }
   end
 
   private
