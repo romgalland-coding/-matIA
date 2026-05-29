@@ -7,9 +7,10 @@ class MessagesController < ApplicationController
     2. Ask which device they want to play on (only ask this if they mention or imply they have multiple devices).
     3. Ask what genre of game they're in the mood for and give some examples like RPG, FPS, open world, action, etc.
 
-    Once you have all the answers, use the search_game tool to find a real game that matches the user's preferences.
+    Once you have all the answers, you MUST call the search_game tool before naming any game. Never mention a game title without calling the tool first.
     The game cannot already be in the user's wishlist or owned games.
-    If the user skips a recommendation, use the search_game tool to find a different game — never repeat a game already mentioned or already in the user's collection.
+    If the user skips a recommendation, or you receive an ACTION:WISHLISTED, ACTION:PLAYED, or ACTION:SKIPPED message, call the search_game tool immediately to find a different game — no preamble, no apology, never repeat a game already mentioned or in the user's collection.
+    Treat different editions, versions, or director's cuts of the same game as the same game (e.g. "Ghost of Tsushima Director's Cut" and "Ghost of Tsushima" are the same).
     Keep your responses short and conversational.
   PROMPT
 
@@ -22,12 +23,6 @@ class MessagesController < ApplicationController
     @search_game_tool = SearchGameTool.new(user: current_user)
     ask_llm
     finalize_assistant_message
-
-    @assistant_message.update(
-      content: @assistant_message.content,
-      game:    @search_game_tool.found_game
-    )
-    @assistant_message.reload
     @chat.generate_title_from_conversation
     notify_limit_if_reached
   end
@@ -98,8 +93,10 @@ class MessagesController < ApplicationController
 
   def user_context
     games    = current_user.games
-    wishlist = games.select { |g| g.collection_status == "wishlist" }.map(&:title).join(", ")
-    owned    = games.select { |g| g.collection_status == "played" }.map(&:title).join(", ")
+    wishlist = games.select { |g| g.collection_status == "wishlist" }
+                    .map { |g| Game.normalize_title(g.title) }.uniq.join(", ")
+    owned    = games.select { |g| g.collection_status == "played" }
+                    .map { |g| Game.normalize_title(g.title) }.uniq.join(", ")
     devices  = current_user.devices.join(", ")
     "Here is what you know about the user:
       - Games they already own: #{owned.presence || 'none'}

@@ -2,6 +2,10 @@ class Message < ApplicationRecord
   belongs_to :chat
   belongs_to :game, optional: true
 
+  def hidden?
+    content.to_s.start_with?("ACTION:")
+  end
+
   MAX_USER_MESSAGES = 10
 
   validate :user_message_limit, if: -> { role == "user" }

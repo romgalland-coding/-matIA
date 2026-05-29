@@ -2,7 +2,19 @@ class Game < ApplicationRecord
   belongs_to :user
   has_many :messages, dependent: :nullify
 
-  SORT_FIELDS = %w[title added_date metacritic].freeze
+  EDITION_SUFFIXES = /
+    \s*[:\-–]\s*
+    (director'?s\ cut|definitive\ edition|complete\ edition|
+     game\ of\ the\ year|goty|remastered|enhanced\ edition|
+     ultimate\ edition|anniversary\ edition|\w+\ edition)
+    \s*$
+  /xi
+
+  def self.normalize_title(title)
+    title.sub(EDITION_SUFFIXES, "").strip
+  end
+
+  SORT_FIELDS = %w[title added_date metacritic platform genre release_date sales].freeze
   SORT_DIRECTIONS = %w[asc desc].freeze
   SORT_COLUMN_MAP = {
     "added_date" => "updated_at"
