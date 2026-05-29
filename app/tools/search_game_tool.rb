@@ -30,7 +30,9 @@ class SearchGameTool < RubyLLM::Tool
       description:        api_detail["description_raw"].presence,
       cover_image:        api_game["background_image"],
       release_date:       api_game["released"],
-      collection_status:  game.collection_status.presence || "pending"
+      collection_status:  game.collection_status.presence || "pending",
+      rawg_id:            api_game["id"]
+
     )
     game.save
     @found_game = game
@@ -38,7 +40,12 @@ class SearchGameTool < RubyLLM::Tool
     {
       title:        game.title,
       genre:        game.genre,
-      release_date: game.release_date&.to_s
+      platforms:    platforms,
+      studio:       game.studio,
+      metacritic:   metacritic,
+      release_date: game.release_date&.to_s,
+      cover_image:  game.cover_image,
+      rawg_id:            api_game["id"]
     }
   rescue => e
     { error: e.message }

@@ -10,27 +10,52 @@
 
   <div class="games-sort-container mb-4">
     <button id="games-sort-toggle" type="button" class="btn btn-secondary games-sort-toggle" aria-expanded="false" aria-controls="games-sort-panel" onclick="toggleSortPanel()">
-      <i class="fa-solid fa-filter me-2"></i> Sort by
+      <i class="fa-solid fa-filter me-2"></i> Sort/filter
     </button>
 
     <div id="games-sort-panel" class="games-sort-panel d-none">
-      <div class="games-sort-row">
-        <span class="games-sort-label">Sort by</span>
-        <div class="games-sort-group">
-          <%= link_to "Title", games_path(sort: "title", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'title'}" %>
-          <%= link_to "Platform", games_path(sort: "platform", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'platform'}" %>
-          <%= link_to "Genre", games_path(sort: "genre", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'genre'}" %>
-          <%= link_to "Release date", games_path(sort: "release_date", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'release_date'}" %>
-          <%= link_to "Sales", games_path(sort: "sales", direction: @direction, tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @sort == 'sales'}" %>
+      <%= form_with url: games_path, method: :get, local: true, class: "games-filter-form" do %>
+        <div class="games-sort-row">
+          <span class="games-sort-label">Sort by</span>
+          <div class="games-sort-group">
+            <%= button_tag "Title", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'title'}", data: { sort_value: 'title' } %>
+            <%= button_tag "Added date", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'added_date'}", data: { sort_value: 'added_date' } %>
+            <%= button_tag "Rating", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'metacritic'}", data: { sort_value: 'metacritic' } %>
+          </div>
         </div>
-      </div>
-      <div class="games-sort-row">
-        <span class="games-sort-label">Order</span>
-        <div class="games-sort-group">
-          <%= link_to "Ascending", games_path(sort: @sort, direction: "asc", tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @direction == 'asc'}" %>
-          <%= link_to "Descending", games_path(sort: @sort, direction: "desc", tab: params[:tab]), class: "games-sort-button js-sorting-link #{'games-sort-button--active' if @direction == 'desc'}" %>
+        <div class="games-sort-row">
+          <span class="games-sort-label">Order</span>
+          <div class="games-sort-group">
+            <%= button_tag "Ascending", type: "button", class: "games-sort-button #{'games-sort-button--active' if @direction == 'asc'}", data: { direction_value: 'asc' } %>
+            <%= button_tag "Descending", type: "button", class: "games-sort-button #{'games-sort-button--active' if @direction == 'desc'}", data: { direction_value: 'desc' } %>
+          </div>
         </div>
-      </div>
+        <div class="games-sort-row">
+          <span class="games-sort-label">Filter by</span>
+          <div class="games-sort-group games-filter-group">
+            <div class="games-filter-field mb-2">
+              <label for="platform">Platform</label>
+              <%= select_tag :platform, options_for_select([['All platforms', '']] + @platform_options.map { |p| [p, p] }, @selected_platform), id: 'platform', class: 'form-select' %>
+            </div>
+            <div class="games-filter-field mb-2">
+              <label for="genre">Genre</label>
+              <%= select_tag :genre, options_for_select([['All genres', '']] + @genre_options.map { |g| [g, g] }, @selected_genre), id: 'genre', class: 'form-select' %>
+            </div>
+            <div class="games-filter-field mb-2">
+              <label for="studio">Studio</label>
+              <%= select_tag :studio, options_for_select([['All studios', '']] + @studio_options.map { |s| [s, s] }, @selected_studio), id: 'studio', class: 'form-select' %>
+            </div>
+          </div>
+        </div>
+        <%= hidden_field_tag :sort, @sort, id: 'sort-field' %>
+        <%= hidden_field_tag :direction, @direction, id: 'direction-field' %>
+        <%= hidden_field_tag :tab, params[:tab], id: 'tab-field' %>
+        <%= hidden_field_tag :panel_open, params[:panel_open], id: 'panel-open-field' %>
+        <div class="games-filter-actions mt-3">
+          <%= submit_tag "Apply", class: "games-sort-button btn btn-primary me-2" %>
+          <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary" %>
+        </div>
+      <% end %>
     </div>
   </div>
 
@@ -142,15 +167,8 @@
 
     const hasGames = tab === 'wishlist' ? wishlistHasGames : ownedHasGames;
     document.getElementById('discover-btn').classList.toggle('d-none', !hasGames);
-    updateSortLinks(tab);
-  }
-
-  function updateSortLinks(tab) {
-    document.querySelectorAll('.js-sorting-link').forEach(link => {
-      const url = new URL(link.href, window.location.origin);
-      url.searchParams.set('tab', tab);
-      link.href = url.toString();
-    });
+    const tabField = document.getElementById('tab-field');
+    if (tabField) tabField.value = tab;
   }
 
   function createChat(event) {
@@ -165,16 +183,63 @@
     button.setAttribute('aria-expanded', String(!isHidden));
   }
 
+  function initSortFilterButtons() {
+    document.querySelectorAll('[data-sort-value]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.getElementById('sort-field').value = button.dataset.sortValue;
+        updateActiveButton('[data-sort-value]', button);
+      });
+    });
+
+    document.querySelectorAll('[data-direction-value]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.getElementById('direction-field').value = button.dataset.directionValue;
+        updateActiveButton('[data-direction-value]', button);
+      });
+    });
+
+    const clearButton = document.getElementById('clear-filters-button');
+    const form = document.querySelector('.games-filter-form');
+    if (clearButton && form) {
+      clearButton.addEventListener('click', () => {
+        document.getElementById('platform').value = '';
+        document.getElementById('genre').value = '';
+        document.getElementById('studio').value = '';
+        // keep panel open after clear
+        const panelField = document.getElementById('panel-open-field');
+        if (panelField) panelField.value = '1';
+        // submit form to apply clear immediately
+        form.submit();
+        // remove focus so button doesn't stay highlighted
+        clearButton.blur();
+      });
+    }
+  }
+
+  function updateActiveButton(selector, activeButton) {
+    document.querySelectorAll(selector).forEach(btn => btn.classList.remove('games-sort-button--active'));
+    activeButton.classList.add('games-sort-button--active');
+  }
+
   // Check URL parameter for initial tab
   function initializeTab() {
     const urlParams = new URLSearchParams(window.location.search);
     const initialTab = urlParams.get('tab') || 'wishlist';
-    if (initialTab === 'owned') {
-      switchTab('owned');
+    if (initialTab === 'owned') switchTab('owned');
+    // open panel if requested (clear submits with panel_open=1)
+    const panelOpen = urlParams.get('panel_open');
+    if (panelOpen === '1') {
+      const panel = document.getElementById('games-sort-panel');
+      if (panel.classList.contains('d-none')) {
+        toggleSortPanel();
+      }
     }
-    updateSortLinks(initialTab);
   }
 
-  document.addEventListener('turbo:load', initializeTab);
+  document.addEventListener('turbo:load', () => {
+    initializeTab();
+    initSortFilterButtons();
+  });
   initializeTab();
+  initSortFilterButtons();
 </script>
