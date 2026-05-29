@@ -7,7 +7,7 @@ export default class extends Controller {
     event.preventDefault()
     this._act("rec-card--action-wishlist", async () => {
       await this._patchGame(this.wishlistFormTarget)
-      this._setSkipMessage("I added this game to my wishlist, recommend me a different game.")
+      this._setSkipMessage("ACTION:WISHLISTED — recommend a different game now.")
       this.skipFormTarget.requestSubmit()
     })
   }
@@ -16,7 +16,7 @@ export default class extends Controller {
     event.preventDefault()
     this._act("rec-card--action-played", async () => {
       await this._patchGame(this.playedFormTarget)
-      this._setSkipMessage("I already played this game, recommend me a different game.")
+      this._setSkipMessage("ACTION:PLAYED — recommend a different game now.")
       this.skipFormTarget.requestSubmit()
     })
   }
@@ -24,6 +24,7 @@ export default class extends Controller {
   skip(event) {
     event.preventDefault()
     this._act("rec-card--action-skip", () => {
+      this._setSkipMessage("ACTION:SKIPPED — recommend a different game now.")
       this.skipFormTarget.requestSubmit()
     })
   }

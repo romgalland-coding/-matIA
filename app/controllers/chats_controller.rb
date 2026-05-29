@@ -1,4 +1,8 @@
 class ChatsController < ApplicationController
+  def index
+    @chats = current_user.chats.order(updated_at: :desc)
+  end
+
   def show
     @chat = Chat.find(params[:id])
     @messages = @chat.messages

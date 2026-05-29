@@ -1,4 +1,7 @@
-<div class="rec-card" data-controller="rec-card">
+<div class="rec-card" data-controller="rec-card" style="position: relative;">
+  <div class="rec-card__badge rec-card__badge--wishlist"><i class="fa-solid fa-bookmark"></i></div>
+  <div class="rec-card__badge rec-card__badge--played"><i class="fa-solid fa-gamepad"></i></div>
+  <div class="rec-card__badge rec-card__badge--skip"><i class="fa-solid fa-forward"></i></div>
   <% if game.cover_image.present? %>
     <div class="rec-card__cover" style="background-image: url('<%= game.cover_image %>')"></div>
   <% else %>

@@ -14,7 +14,7 @@ class SearchGameTool < RubyLLM::Tool
     results = rawg.search(title)
     return { error: "No game found for '#{title}'" } if results.blank?
 
-    api_game = results.first
+    api_game = best_match(results, title)
     api_detail = rawg.find(api_game["id"])
 
     platforms  = api_game["platforms"]&.map { |p| p.dig("platform", "name") }&.compact || []
@@ -38,13 +38,30 @@ class SearchGameTool < RubyLLM::Tool
     {
       title:        game.title,
       genre:        game.genre,
-      platforms:    platforms,
-      studio:       game.studio,
-      metacritic:   metacritic,
-      release_date: game.release_date&.to_s,
-      cover_image:  game.cover_image
+      release_date: game.release_date&.to_s
     }
   rescue => e
     { error: e.message }
+  end
+
+  private
+
+  def best_match(results, title)
+    normalized = Game.normalize_title(title).downcase
+    results.min_by do |r|
+      candidate = Game.normalize_title(r["name"]).downcase
+      levenshtein(normalized, candidate)
+    end
+  end
+
+  def levenshtein(a, b)
+    m, n = a.length, b.length
+    dp = Array.new(m + 1) { |i| Array.new(n + 1) { |j| i.zero? ? j : j.zero? ? i : 0 } }
+    (1..m).each do |i|
+      (1..n).each do |j|
+        dp[i][j] = a[i-1] == b[j-1] ? dp[i-1][j-1] : 1 + [dp[i-1][j], dp[i][j-1], dp[i-1][j-1]].min
+      end
+    end
+    dp[m][n]
   end
 end

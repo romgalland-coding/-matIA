@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   resources :games, only: %i(update destroy show index)
 
-  resources :chats, only: [:show, :create]  do
+  resources :chats, only: [:index, :show, :create]  do
     resources :messages, only: [:create]
   end
 

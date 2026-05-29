@@ -1,14 +1,37 @@
-<div class="chat-page">
+<div class="chat-page" data-controller="chat-sidebar">
 
   <header class="chat-header">
-    <div class="chat-header__icon">
-      <i class="fa-solid fa-wand-magic-sparkles"></i>
-    </div>
-    <div>
-      <p class="chat-header__eyebrow">RECOMMENDATION ASSISTANT</p>
-      <h1 class="chat-header__title">matIA <span id="chat_title" class="chat-header__chat-id">- <%= @chat.title %></span></h1>
+    <button class="chat-header__back" data-action="click->chat-sidebar#open">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <div class="chat-header__titles">
+      <span class="chat-header__app-name">matIA</span>
+      <span id="chat_title" class="chat-header__chat-title"><%= @chat.title %></span>
     </div>
   </header>
+
+  <div class="chat-sidebar">
+    <div class="chat-sidebar__overlay" data-action="click->chat-sidebar#close"></div>
+    <div class="chat-sidebar__panel">
+      <div class="chat-sidebar__header">
+        <span class="chat-sidebar__heading">Chats</span>
+        <button class="chat-sidebar__close" data-action="click->chat-sidebar#close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="chat-sidebar__list">
+        <% current_user.chats.order(updated_at: :desc).each do |chat| %>
+          <%= link_to chat_path(chat), class: "chat-sidebar__item #{'chat-sidebar__item--active' if chat.id == @chat.id}" do %>
+            <i class="fa-solid fa-message chat-sidebar__item-icon"></i>
+            <span class="chat-sidebar__item-title"><%= chat.title %></span>
+          <% end %>
+        <% end %>
+      </div>
+      <%= button_to chats_path, method: :post, class: "chat-sidebar__new" do %>
+        <i class="fa-solid fa-plus"></i> New chat
+      <% end %>
+    </div>
+  </div>
 
   <%= turbo_stream_from @chat %>
 

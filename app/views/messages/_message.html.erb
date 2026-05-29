@@ -1,3 +1,4 @@
+<% unless message.hidden? %>
 <div id="<%= dom_id(message) %>" class="chat-message chat-message--<%= message.role %>">
   <div class="chat-bubble chat-bubble--<%= message.role %>">
     <div id="<%= dom_id(message, :content) %>">
@@ -8,3 +9,4 @@
     <%= render "chats/recommendation_card", game: message.game, chat: message.chat %>
   <% end %>
 </div>
+<% end %>
