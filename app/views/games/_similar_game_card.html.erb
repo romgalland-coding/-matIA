@@ -1,5 +1,5 @@
 <div class="game-card">
-  <%= link_to game_path(game), class: "game-card__link" do %>
+  <%= link_to game_path(game, back: back_path), class: "game-card__link" do %>
     <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
       <% unless game.cover_image.present? %>
         <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>

@@ -1,7 +1,7 @@
 <div class="game-show px-4 pt-4">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <%= link_to games_path, class: "btn btn-secondary btn-sm" do %>
+    <%= link_to (params[:back].presence || games_path), class: "btn btn-secondary btn-sm" do %>
       <i class="fa-solid fa-chevron-left"></i> Back
     <% end %>
     <span class="chip chip-yellow">
@@ -68,7 +68,7 @@
     <h2 class="fw-bold mb-3" style="font-size: 1.25rem;">Similar games</h2>
     <div class="games-grid">
       <% @similar_games.each do |game| %>
-        <%= render "games/similar_game_card", game: game %>
+        <%= render "games/similar_game_card", game: game, back_path: game_path(@game) %>
       <% end %>
     </div>
   </div>
