@@ -50,7 +50,6 @@
         <%= hidden_field_tag :sort, @sort, id: 'sort-field' %>
         <%= hidden_field_tag :direction, @direction, id: 'direction-field' %>
         <%= hidden_field_tag :tab, params[:tab], id: 'tab-field' %>
-        <%= hidden_field_tag :panel_open, params[:panel_open], id: 'panel-open-field' %>
         <div class="games-filter-actions mt-3">
           <%= submit_tag "Apply", class: "games-sort-button btn btn-primary me-2" %>
           <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary" %>
@@ -205,12 +204,7 @@
         document.getElementById('platform').value = '';
         document.getElementById('genre').value = '';
         document.getElementById('studio').value = '';
-        // keep panel open after clear
-        const panelField = document.getElementById('panel-open-field');
-        if (panelField) panelField.value = '1';
-        // submit form to apply clear immediately
         form.submit();
-        // remove focus so button doesn't stay highlighted
         clearButton.blur();
       });
     }
@@ -226,14 +220,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const initialTab = urlParams.get('tab') || 'wishlist';
     if (initialTab === 'owned') switchTab('owned');
-    // open panel if requested (clear submits with panel_open=1)
-    const panelOpen = urlParams.get('panel_open');
-    if (panelOpen === '1') {
-      const panel = document.getElementById('games-sort-panel');
-      if (panel.classList.contains('d-none')) {
-        toggleSortPanel();
-      }
-    }
   }
 
   document.addEventListener('turbo:load', () => {
