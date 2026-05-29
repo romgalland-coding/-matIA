@@ -36,6 +36,17 @@ class Game < ApplicationRecord
   }
 
   validates :collection_status, inclusion: { in: ["played", "wishlist", "pending", "skipped"] }
+
+  def metacritic_color
+    return nil unless metacritic.present?
+
+    if metacritic >= 90 then "green-dark"
+    elsif metacritic >= 80 then "green"
+    elsif metacritic >= 75 then "green-light"
+    elsif metacritic >= 50 then "yellow"
+    else "red"
+    end
+  end
   # validate :platforms_must_be_valid
 
   # private

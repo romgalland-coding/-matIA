@@ -124,9 +124,11 @@
     padding: 0.2rem 0.4rem;
   }
 
-  &--green  { background-color: $mat-green; }
-  &--yellow { background-color: $mat-yellow; }
-  &--red    { background-color: $mat-red; }
+  &--green-light { background-color: $mat-green-light; }
+  &--green       { background-color: $mat-green; }
+  &--green-dark  { background-color: $mat-green-dark; }
+  &--yellow      { background-color: $mat-yellow; }
+  &--red         { background-color: $mat-red; }
 }
 
 .game-card__cover-placeholder {

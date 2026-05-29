@@ -16,7 +16,7 @@
   <div class="d-flex align-items-center gap-3 mb-3">
     <h1 class="fw-bold mb-0" style="font-size: 2rem; line-height: 1.1;"><%= @game.title %></h1>
     <% if @game.metacritic.present? %>
-      <span class="metacritic-badge metacritic-badge--lg metacritic-badge--<%= @game.metacritic >= 75 ? 'green' : (@game.metacritic >= 50 ? 'yellow' : 'red') %>">
+      <span class="metacritic-badge metacritic-badge--lg metacritic-badge--<%= @game.metacritic_color %>">
         <%= @game.metacritic %>
       </span>
     <% end %>

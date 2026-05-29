@@ -5,7 +5,7 @@
         <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
       <% end %>
       <% if game.metacritic.present? %>
-        <span class="metacritic-badge metacritic-badge--<%= game.metacritic >= 75 ? 'green' : (game.metacritic >= 50 ? 'yellow' : 'red') %>">
+        <span class="metacritic-badge metacritic-badge--<%= game.metacritic_color %>">
           <%= game.metacritic %>
         </span>
       <% end %>
