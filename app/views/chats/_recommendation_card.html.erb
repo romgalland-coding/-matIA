@@ -1,4 +1,5 @@
-<div class="rec-card" data-controller="rec-card" style="position: relative;">
+<% action_class = { "wishlist" => "rec-card--action-wishlist", "played" => "rec-card--action-played", "skipped" => "rec-card--action-skip" }[game.collection_status] %>
+<div class="rec-card <%= action_class %>" data-controller="rec-card" style="position: relative;">
   <div class="rec-card__badge rec-card__badge--wishlist"><i class="fa-solid fa-bookmark"></i></div>
   <div class="rec-card__badge rec-card__badge--played"><i class="fa-solid fa-gamepad"></i></div>
   <div class="rec-card__badge rec-card__badge--skip"><i class="fa-solid fa-forward"></i></div>
@@ -23,6 +24,7 @@
       <p class="rec-card__desc"><%= truncate(game.description, length: 120) %></p>
     <% end %>
   </div>
+  <% unless action_class %>
   <div class="rec-card__actions">
     <%= button_to game_path(game), method: :patch, params: { collection_status: "wishlist" },
         class: "btn btn-primary rec-card__btn",
@@ -44,4 +46,5 @@
       <i class="fa-solid fa-forward"></i> Skip
     <% end %>
   </div>
+  <% end %>
 </div>
