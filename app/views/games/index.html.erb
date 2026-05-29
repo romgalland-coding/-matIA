@@ -124,9 +124,6 @@
                 <div class="game-card__body">
                   <p class="game-card__title"><%= game.title %></p>
                   <p class="game-card__genre"><%= game.genre %></p>
-                  <% if game.platform.present? %>
-                    <span class="game-card__platform"><%= Array(game.platform).first %></span>
-                  <% end %>
                 </div>
               <% end %>
               <%= button_to game_path(game), method: :delete, class: "game-card__delete-btn", form: { class: "game-card__delete-form" }, data: { action: "click->confirm#show", game_title: game.title, game_cover: game.cover_image } do %>
