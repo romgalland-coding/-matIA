@@ -7,7 +7,7 @@
         <i class="fa-solid fa-filter" id="filter-icon"></i>
         <span>Sort/filter</span>
       </button>
-      <button id="edit-btn" class="game-edit-btn d-none" data-action="click->edit-mode#toggle">
+      <button id="edit-btn" class="game-edit-btn" data-action="click->edit-mode#toggle">
         <i class="fa-solid fa-pen-to-square"></i>
       </button>
       <div id="games-sort-panel" class="games-sort-panel d-none" data-controller="games-filter">
@@ -48,8 +48,8 @@
         <%= hidden_field_tag :direction, @direction, id: 'direction-field', data: { games_filter_target: "directionField" } %>
         <%= hidden_field_tag :tab, params[:tab], id: 'tab-field', data: { games_filter_target: "tabField" } %>
         <div class="games-filter-actions mt-3">
-          <%= submit_tag "Apply", class: "games-sort-button btn btn-primary me-2" %>
-          <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary", data: { action: "click->games-filter#clearFilters" } %>
+          <%= submit_tag "Apply", class: "games-sort-button games-sort-button--apply me-2" %>
+          <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button games-sort-button--clear", data: { action: "click->games-filter#clearFilters" } %>
         </div>
       <% end %>
       </div>
@@ -69,36 +69,43 @@
 
   <%# Wishlist tab %>
   <% wishlist_games = @games.select { |g| g.collection_status == "wishlist" } %>
-  <div id="tab-wishlist" class="games-grid">
-    <% if wishlist_games.any? %>
-      <% wishlist_games.each do |game| %>
-        <div class="game-card">
-          <%= link_to game_path(game), class: "game-card__link" do %>
-            <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
-              <% unless game.cover_image.present? %>
-                <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+  <div id="tab-wishlist">
+    <div class="wishlist-section" data-edit-mode-target="wishlistSection">
+      <% if wishlist_games.any? %>
+        <div class="games-grid">
+          <% wishlist_games.each do |game| %>
+            <div class="game-card">
+              <%= link_to game_path(game), class: "game-card__link" do %>
+                <div class="game-card__cover" <% if game.cover_image.present? %>style="background-image: url('<%= game.cover_image %>')"<% end %>>
+                  <% unless game.cover_image.present? %>
+                    <span class="game-card__cover-placeholder"><i class="fa-solid fa-gamepad"></i></span>
+                  <% end %>
+                  <% if game.metacritic.present? %>
+                    <span class="metacritic-badge metacritic-badge--<%= game.metacritic_color %>">
+                      <%= game.metacritic %>
+                    </span>
+                  <% end %>
+                </div>
+                <div class="game-card__body">
+                  <p class="game-card__title"><%= game.title %></p>
+                  <p class="game-card__genre"><%= game.genre %></p>
+                </div>
               <% end %>
-              <% if game.metacritic.present? %>
-                <span class="metacritic-badge metacritic-badge--<%= game.metacritic_color %>">
-                  <%= game.metacritic %>
-                </span>
+              <div class="game-card__footer">
+                <%= button_to game_path(game), method: :patch, params: { collection_status: "played" }, class: "game-card__action game-card__action--blue" do %>
+                  <i class="fa-solid fa-gamepad"></i> Mark played
+                <% end %>
+              </div>
+              <%= button_to game_path(game, tab: "wishlist"), method: :delete, class: "game-card__delete-btn", form: { class: "game-card__delete-form" }, data: { action: "click->confirm#show", game_title: game.title, game_cover: game.cover_image } do %>
+                <i class="fa-solid fa-xmark"></i>
               <% end %>
-            </div>
-            <div class="game-card__body">
-              <p class="game-card__title"><%= game.title %></p>
-              <p class="game-card__genre"><%= game.genre %></p>
             </div>
           <% end %>
-          <div class="game-card__footer">
-            <%= button_to game_path(game), method: :patch, params: { collection_status: "played" }, class: "game-card__action game-card__action--blue" do %>
-              <i class="fa-solid fa-gamepad"></i> Mark played
-            <% end %>
-          </div>
         </div>
+      <% else %>
+        <p class="games-empty">No games in your wishlist yet. <br><a href="#" onclick="createChat(event)">Start a chat to add some →</a></p>
       <% end %>
-    <% else %>
-      <p class="games-empty">No games in your wishlist yet. <br><a href="#" onclick="createChat(event)">Start a chat to add some →</a></p>
-    <% end %>
+    </div>
   </div>
 
   <%# Owned tab %>
@@ -158,7 +165,9 @@
     document.querySelector(`[data-tab="${tab}"]`).classList.add('games-tab--active');
     document.getElementById('tab-wishlist').classList.toggle('d-none', tab !== 'wishlist');
     document.getElementById('tab-owned').classList.toggle('d-none', tab !== 'owned');
-    document.getElementById('edit-btn').classList.toggle('d-none', tab !== 'owned');
+
+    // Exit editing mode when switching tabs
+    document.querySelectorAll('.owned-section, .wishlist-section').forEach(el => el.classList.remove('editing'));
 
     const hasGames = tab === 'wishlist' ? wishlistHasGames : ownedHasGames;
     document.getElementById('discover-btn').classList.toggle('d-none', !hasGames);

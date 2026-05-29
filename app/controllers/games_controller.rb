@@ -27,7 +27,8 @@ class GamesController < ApplicationController
   def destroy
     @game = current_user.games.find(params[:id])
     @game.destroy
-    redirect_to games_path(tab: "owned"), notice: "#{@game.title} removed."
+    tab = params[:tab].presence || "owned"
+    redirect_to games_path(tab: tab), notice: "#{@game.title} removed."
   end
 
   def show

@@ -340,6 +340,20 @@
   color: #000;
 }
 
+.games-sort-button--apply {
+  background-color: $mat-blue;
+  color: #000;
+
+  &:hover, &:focus { background-color: $mat-blue; }
+}
+
+.games-sort-button--clear {
+  background-color: $mat-red;
+  color: #000;
+
+  &:hover, &:focus { background-color: $mat-red; }
+}
+
 // Owned edit mode
 .game-edit-btn {
   display: inline-flex;
@@ -384,7 +398,8 @@
   color: #000;
 }
 
-.owned-section.editing .game-card__delete-btn {
+.owned-section.editing .game-card__delete-btn,
+.wishlist-section.editing .game-card__delete-btn {
   display: flex;
 }
 
