@@ -1,19 +1,19 @@
-<div class="home-page px-4 pt-5">
+<div class="home-page">
 
-  <header class="text-center mb-4">
+  <header class="text-center">
     <h1 class="home-title">meet <em>matIA</em></h1>
     <p class="home-subtitle">Discover your next favourite game.</p>
   </header>
 
   <% if @cover_images.any? %>
-    <div class="home-grid mb-4">
+    <div class="home-grid">
       <% @cover_images.each do |url| %>
         <div class="home-grid__cell" style="background-image: url('<%= url %>')"></div>
       <% end %>
     </div>
   <% end %>
 
-  <div class="home-features mb-4">
+  <div class="home-features">
     <div class="home-feature">
       <div class="home-feature__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
       <div>
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <div class="d-flex flex-column gap-3">
+  <div class="home-cta-section">
     <% if user_signed_in? %>
       <%= button_to chats_path, method: :post, class: "btn btn-primary w-100 py-3 home-cta" do %>
         <i class="fa-solid fa-message me-2"></i>Start chatting
