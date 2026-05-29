@@ -6,10 +6,9 @@
       <i class="fa-solid fa-pen-to-square"></i> Edit
     </button>
   </div>
-  <p class="games-subtitle">Keep track of what you love and want next.</p>
 
   <div class="games-sort-container mb-4">
-    <button id="games-sort-toggle" type="button" class="btn btn-secondary games-sort-toggle" aria-expanded="false" aria-controls="games-sort-panel" onclick="toggleSortPanel()">
+    <button id="games-sort-toggle" type="button" class="games-sort-toggle" aria-expanded="false" aria-controls="games-sort-panel" onclick="toggleSortPanel()">
       <i class="fa-solid fa-filter me-2"></i> Sort/filter
     </button>
 
@@ -18,16 +17,16 @@
         <div class="games-sort-row">
           <span class="games-sort-label">Sort by</span>
           <div class="games-sort-group">
-            <%= button_tag "Title", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'title'}", data: { sort_value: 'title' } %>
-            <%= button_tag "Added date", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'added_date'}", data: { sort_value: 'added_date' } %>
-            <%= button_tag "Rating", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'metacritic'}", data: { sort_value: 'metacritic' } %>
+            <%= button_tag "Title", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'title'}", data: { sort_value: 'title', action: "click->games-filter#handleSortClick" } %>
+            <%= button_tag "Added date", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'added_date'}", data: { sort_value: 'added_date', action: "click->games-filter#handleSortClick" } %>
+            <%= button_tag "Rating", type: "button", class: "games-sort-button #{'games-sort-button--active' if @sort == 'metacritic'}", data: { sort_value: 'metacritic', action: "click->games-filter#handleSortClick" } %>
           </div>
         </div>
         <div class="games-sort-row">
           <span class="games-sort-label">Order</span>
           <div class="games-sort-group">
-            <%= button_tag "Ascending", type: "button", class: "games-sort-button #{'games-sort-button--active' if @direction == 'asc'}", data: { direction_value: 'asc' } %>
-            <%= button_tag "Descending", type: "button", class: "games-sort-button #{'games-sort-button--active' if @direction == 'desc'}", data: { direction_value: 'desc' } %>
+            <%= button_tag "Ascending", type: "button", class: "games-sort-button #{'games-sort-button--active' if @direction == 'asc'}", data: { direction_value: 'asc', action: "click->games-filter#handleDirectionClick" } %>
+            <%= button_tag "Descending", type: "button", class: "games-sort-button #{'games-sort-button--active' if @direction == 'desc'}", data: { direction_value: 'desc', action: "click->games-filter#handleDirectionClick" } %>
           </div>
         </div>
         <div class="games-sort-row">
@@ -35,15 +34,15 @@
           <div class="games-sort-group games-filter-group">
             <div class="games-filter-field mb-2">
               <label for="platform">Platform</label>
-              <%= select_tag :platform, options_for_select([['All platforms', '']] + @platform_options.map { |p| [p, p] }, @selected_platform), id: 'platform', class: 'form-select', data: { action: "change->games-filter#handleSelectChange" } %>
+              <%= select_tag :platform, options_for_select([['All platforms', '']] + @platform_options.map { |p| [p, p] }, @selected_platform), id: 'platform', class: 'form-select' %>
             </div>
             <div class="games-filter-field mb-2">
               <label for="genre">Genre</label>
-              <%= select_tag :genre, options_for_select([['All genres', '']] + @genre_options.map { |g| [g, g] }, @selected_genre), id: 'genre', class: 'form-select', data: { action: "change->games-filter#handleSelectChange" } %>
+              <%= select_tag :genre, options_for_select([['All genres', '']] + @genre_options.map { |g| [g, g] }, @selected_genre), id: 'genre', class: 'form-select' %>
             </div>
             <div class="games-filter-field mb-2">
               <label for="studio">Studio</label>
-              <%= select_tag :studio, options_for_select([['All studios', '']] + @studio_options.map { |s| [s, s] }, @selected_studio), id: 'studio', class: 'form-select', data: { action: "change->games-filter#handleSelectChange" } %>
+              <%= select_tag :studio, options_for_select([['All studios', '']] + @studio_options.map { |s| [s, s] }, @selected_studio), id: 'studio', class: 'form-select' %>
             </div>
           </div>
         </div>
@@ -52,11 +51,12 @@
         <%= hidden_field_tag :tab, params[:tab], id: 'tab-field', data: { games_filter_target: "tabField" } %>
         <div class="games-filter-actions mt-3">
           <%= submit_tag "Apply", class: "games-sort-button btn btn-primary me-2" %>
-          <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary" %>
+          <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary", data: { action: "click->games-filter#clearFilters" } %>
         </div>
       <% end %>
     </div>
   </div>
+  <p class="games-subtitle">Keep track of what you love and want next.</p>
 
   <%# Tab switcher %>
   <div class="games-tabs mb-4">

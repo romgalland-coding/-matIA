@@ -252,6 +252,14 @@
   box-shadow: none;
   background-color: transparent;
   color: #000;
+  cursor: pointer;
+  transition: none;
+}
+
+.games-sort-toggle:hover,
+.games-sort-toggle:focus {
+  background-color: transparent;
+  color: #000;
 }
 
 .games-sort-panel {
