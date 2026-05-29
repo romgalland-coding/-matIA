@@ -32,6 +32,7 @@ class GamesController < ApplicationController
 
   def show
     @game = current_user.games.find(params[:id])
+    enrich_game_if_needed
 
     if @game.rawg_id.present? && @game.genre.present?
       rawg = RawgService.new
@@ -51,5 +52,22 @@ class GamesController < ApplicationController
     else
       @similar_games = []
     end
+  end
+
+  private
+
+  def enrich_game_if_needed
+    return unless @game.rawg_id.present? && @game.description.blank?
+
+    detail = RawgService.new.find(@game.rawg_id)
+    return if detail.blank?
+
+    @game.update(
+      platform:    detail["platforms"]&.map { |p| p.dig("platform", "name") }&.compact || [],
+      studio:      detail["developers"]&.map { |d| d["name"] }&.join(", ").presence,
+      description: detail["description_raw"].presence,
+      release_date: detail["released"],
+      metacritic:  detail["metacritic"]
+    )
   end
 end
