@@ -38,7 +38,7 @@ PIXEL_KNIGHT_GAMES = [
   { title: "Hollow Knight",                 status: "wishlist" },
   { title: "Celeste",                       status: "played"    },
   { title: "Cuphead",                       status: "pending"  },
-  { title: "Cult of the Lamb",              status: "wishlist" },
+  { title: "Gran Turismo 7",              status: "wishlist" },
   { title: "Disco Elysium",                 status: "pending"  },
   { title: "Ori and the Will of the Wisps", status: "wishlist" },
   { title: "Returnal",                      status: "skipped"  }
