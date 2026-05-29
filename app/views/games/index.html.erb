@@ -13,8 +13,8 @@
       <i class="fa-solid fa-filter me-2"></i> Sort/filter
     </button>
 
-    <div id="games-sort-panel" class="games-sort-panel d-none">
-      <%= form_with url: games_path, method: :get, local: true, class: "games-filter-form" do %>
+    <div id="games-sort-panel" class="games-sort-panel d-none" data-controller="games-filter">
+      <%= form_with url: games_path, method: :get, local: false, class: "games-filter-form", data: { games_filter_target: "form", action: "submit->games-filter#submitForm" } do %>
         <div class="games-sort-row">
           <span class="games-sort-label">Sort by</span>
           <div class="games-sort-group">
@@ -35,21 +35,21 @@
           <div class="games-sort-group games-filter-group">
             <div class="games-filter-field mb-2">
               <label for="platform">Platform</label>
-              <%= select_tag :platform, options_for_select([['All platforms', '']] + @platform_options.map { |p| [p, p] }, @selected_platform), id: 'platform', class: 'form-select' %>
+              <%= select_tag :platform, options_for_select([['All platforms', '']] + @platform_options.map { |p| [p, p] }, @selected_platform), id: 'platform', class: 'form-select', data: { action: "change->games-filter#handleSelectChange" } %>
             </div>
             <div class="games-filter-field mb-2">
               <label for="genre">Genre</label>
-              <%= select_tag :genre, options_for_select([['All genres', '']] + @genre_options.map { |g| [g, g] }, @selected_genre), id: 'genre', class: 'form-select' %>
+              <%= select_tag :genre, options_for_select([['All genres', '']] + @genre_options.map { |g| [g, g] }, @selected_genre), id: 'genre', class: 'form-select', data: { action: "change->games-filter#handleSelectChange" } %>
             </div>
             <div class="games-filter-field mb-2">
               <label for="studio">Studio</label>
-              <%= select_tag :studio, options_for_select([['All studios', '']] + @studio_options.map { |s| [s, s] }, @selected_studio), id: 'studio', class: 'form-select' %>
+              <%= select_tag :studio, options_for_select([['All studios', '']] + @studio_options.map { |s| [s, s] }, @selected_studio), id: 'studio', class: 'form-select', data: { action: "change->games-filter#handleSelectChange" } %>
             </div>
           </div>
         </div>
-        <%= hidden_field_tag :sort, @sort, id: 'sort-field' %>
-        <%= hidden_field_tag :direction, @direction, id: 'direction-field' %>
-        <%= hidden_field_tag :tab, params[:tab], id: 'tab-field' %>
+        <%= hidden_field_tag :sort, @sort, id: 'sort-field', data: { games_filter_target: "sortField" } %>
+        <%= hidden_field_tag :direction, @direction, id: 'direction-field', data: { games_filter_target: "directionField" } %>
+        <%= hidden_field_tag :tab, params[:tab], id: 'tab-field', data: { games_filter_target: "tabField" } %>
         <div class="games-filter-actions mt-3">
           <%= submit_tag "Apply", class: "games-sort-button btn btn-primary me-2" %>
           <%= button_tag "Clear", type: "button", id: "clear-filters-button", class: "games-sort-button btn btn-outline-secondary" %>
@@ -179,39 +179,6 @@
     button.setAttribute('aria-expanded', String(!isHidden));
   }
 
-  function initSortFilterButtons() {
-    document.querySelectorAll('[data-sort-value]').forEach(button => {
-      button.addEventListener('click', () => {
-        document.getElementById('sort-field').value = button.dataset.sortValue;
-        updateActiveButton('[data-sort-value]', button);
-      });
-    });
-
-    document.querySelectorAll('[data-direction-value]').forEach(button => {
-      button.addEventListener('click', () => {
-        document.getElementById('direction-field').value = button.dataset.directionValue;
-        updateActiveButton('[data-direction-value]', button);
-      });
-    });
-
-    const clearButton = document.getElementById('clear-filters-button');
-    const form = document.querySelector('.games-filter-form');
-    if (clearButton && form) {
-      clearButton.addEventListener('click', () => {
-        document.getElementById('platform').value = '';
-        document.getElementById('genre').value = '';
-        document.getElementById('studio').value = '';
-        form.submit();
-        clearButton.blur();
-      });
-    }
-  }
-
-  function updateActiveButton(selector, activeButton) {
-    document.querySelectorAll(selector).forEach(btn => btn.classList.remove('games-sort-button--active'));
-    activeButton.classList.add('games-sort-button--active');
-  }
-
   // Check URL parameter for initial tab
   function initializeTab() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -221,8 +188,6 @@
 
   document.addEventListener('turbo:load', () => {
     initializeTab();
-    initSortFilterButtons();
   });
   initializeTab();
-  initSortFilterButtons();
 </script>
