@@ -23,7 +23,8 @@ export default class extends Controller {
 
   skip(event) {
     event.preventDefault()
-    this._act("rec-card--action-skip", () => {
+    this._act("rec-card--action-skip", async () => {
+      await this._patchGame(this.wishlistFormTarget, "skipped")
       this._setSkipMessage("ACTION:SKIPPED — recommend a different game now.")
       this.skipFormTarget.requestSubmit()
     })
@@ -37,12 +38,11 @@ export default class extends Controller {
     callback()
   }
 
-  async _patchGame(form) {
+  async _patchGame(form, status = null) {
     const formData = new FormData(form)
-    // Le token CSRF dans le formulaire peut être invalide si le formulaire a été
-    // rendu par ActionCable (contexte sans session). On utilise celui du meta tag.
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
     if (csrfToken) formData.set('authenticity_token', csrfToken)
+    if (status) formData.set('collection_status', status)
     await fetch(form.action, { method: "POST", body: formData })
   }
 
